@@ -1,26 +1,26 @@
-EN | [FR](CHANGELOG.fr.md)
+[EN](CHANGELOG.md) | FR
 
-# Changelog
-All notable changes to this project will be documented in this file.
+# Changelog | liste des changements
+Tous les changements notables de ce projet seront documenté dans ce fichier.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+Le format est basé sur [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+et ce projet adhère au [versionnage sémantique](https://semver.org/spec/v2.0.0.html).
 
-## Road-map
-- Groups
-- Multi-lang support
-- Write documentation pages and examples
-- For more, check the [issues](https://github.com/1000i100/loopy/issues).
+## Feuille de route | développements futurs
+- Groupes
+- Support Multi-langue
+- Écrire les pages de documentations avec exemples
+- Pour plus de détails, consultez les [tickets/issues](https://github.com/1000i100/loopy/issues)
+
+## [Non-publié/Non-Stabilisé] (par [1000i100])
+
+### Ajouté
+
+##### Interface d'édition
+- un **mode simple** pour garder LOOPY aussi simple qu'avant (prise en main aisée / apprentissage facile). Le mode simple ne contiens que ce qui était dans la v1 (et v1.1).
+- un **mode avancé** pour débrider le potentiel de créativité avec les fonctionnalités de la V2.
 
 
-
-## [Unreleased] (by [1000i100])
-
-### Added
-
-##### Edit mode user interface
-- a **simple mode** to keep loopy as simple as it used to be (easy onboarding or learning curve). Simple mode include only v1.* features.
-- an **advanced mode** to unleash the power of creativity with V2 features.
 - add a help shortcut `?` for each features linked to a page with some explanations and use-case examples
 - a global switch between **colorAesthetic**  and **colorLogic** mode to allow the use of color to unambiguous different kind of signals and nodes.
 - zoom in and out (or drag with move tool) in the scene to explore big system.
@@ -155,7 +155,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - all other stuff i miss to mention here.
 
 
-[Unreleased]: https://github.com/1000i100/loopy/compare/v1.1.0...HEAD
+[Non-publié/Non-Stabilisé]: https://github.com/1000i100/loopy/compare/v1.1.0...HEAD
 
 [Version 1.1]: https://github.com/1000i100/loopy/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/1000i100/loopy/releases/tag/v0.0.1
