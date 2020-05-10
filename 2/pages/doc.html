@@ -33,18 +33,43 @@
 <div id="doc"></div>
 <script>
     async function main() {
-        const rawContext = location.href.split('?')[1];
+        const userLang = getUserLang();
+        const rawContext = location.href.split('?')[1] || '/';
         const context = rawContext.split('/');
         let doc = {status:418};
-        if(doc.status>=400) doc = await fetch(`doc/${context[0].toLowerCase()}_${context[1]}.md`);
-        if(doc.status>=400) doc = await fetch(`doc/${context[0]}_${context[1]}.md`);
-        if(doc.status>=400) doc = await fetch(`doc/${context[0].toLowerCase()}_${context[1].toLowerCase()}.md`);
-        if(doc.status>=400) doc = await fetch(`doc/${context[0]}_${context[1].toLowerCase()}.md`);
-        if(doc.status>=400) doc = await fetch(`doc/${context[1]}.md`);
-        if(doc.status>=400) doc = await fetch(`doc/${context[1].toLowerCase()}.md`);
-        if(doc.status>=400) doc = await fetch(`doc/${context[0].toLowerCase()}.md`);
-        if(doc.status>=400) doc = await fetch(`doc/${context[0]}.md`);
-        if(doc.status>=400) doc = await fetch(`doc/default.md`);
+        if(doc.status>=400) doc = await fetch(`doc/${context[0].toLowerCase()}_${context[1]}.${userLang}.md`);
+        if(doc.status>=400) doc = await fetch(`doc/${context[0]}_${context[1]}.${userLang}.md`);
+        if(doc.status>=400) doc = await fetch(`doc/${context[0].toLowerCase()}_${context[1].toLowerCase()}.${userLang}.md`);
+        if(doc.status>=400) doc = await fetch(`doc/${context[0]}_${context[1].toLowerCase()}.${userLang}.md`);
+        if(doc.status>=400) doc = await fetch(`doc/${context[1]}.${userLang}.md`);
+        if(doc.status>=400) doc = await fetch(`doc/${context[1].toLowerCase()}.${userLang}.md`);
+        if(doc.status===200) updatePageLang(userLang);
+        else{
+            if(doc.status>=400) doc = await fetch(`doc/${context[0].toLowerCase()}_${context[1]}.md`);
+            if(doc.status>=400) doc = await fetch(`doc/${context[0]}_${context[1]}.md`);
+            if(doc.status>=400) doc = await fetch(`doc/${context[0].toLowerCase()}_${context[1].toLowerCase()}.md`);
+            if(doc.status>=400) doc = await fetch(`doc/${context[0]}_${context[1].toLowerCase()}.md`);
+            if(doc.status>=400) doc = await fetch(`doc/${context[1]}.md`);
+            if(doc.status>=400) doc = await fetch(`doc/${context[1].toLowerCase()}.md`);
+            if(doc.status===200) updatePageLang('en');
+            else{
+                if(doc.status>=400) doc = await fetch(`doc/${context[0].toLowerCase()}.${userLang}.md`);
+                if(doc.status>=400) doc = await fetch(`doc/${context[0]}.${userLang}.md`);
+                if(doc.status===200) updatePageLang(userLang);
+                else {
+                    if (doc.status >= 400) doc = await fetch(`doc/${context[0].toLowerCase()}.md`);
+                    if (doc.status >= 400) doc = await fetch(`doc/${context[0]}.md`);
+                    if(doc.status===200) updatePageLang('en');
+                    else {
+                        if (doc.status >= 400) doc = await fetch(`doc/default.${userLang}.md`);
+                        if(doc.status===200) updatePageLang(userLang);
+                        else {
+                            if (doc.status >= 400) doc = await fetch(`doc/default.md`);
+                        }
+                    }
+                }
+            }
+        }
         const rawMD = await doc.text();
         document.getElementById('doc').innerHTML = cleaning(marked(rawMD,{}));
         const targetParts = [
@@ -70,6 +95,21 @@
         strHtml.replace(/<iframe[^>]*(width=[^ ]+)[ >]/g,(full,catched)=>full.replace(catched,''));
         strHtml.replace(/<iframe[^>]*(height=[^ ]+)[ >]/g,(full,catched)=>full.replace(catched,''));
         return strHtml;
+    }
+    function getUserLang() {
+        return navigator.language.substring(0, 2).toLowerCase();
+    }
+    function updatePageLang(lang) {
+        document.getElementsByTagName('html')[0].setAttribute('lang',lang);
+        document.getElementsByTagName('title')[0].innerHTML=t('Contextual help',lang);
+    }
+    const T = {fr:{
+            "Contextual help":"Aide contextuelle"
+        }};
+    function t(str,lang="") {
+        if(!lang) lang = getUserLang();
+        if(T[lang] && T[lang][str]) return T[lang][str];
+        return str;
     }
     main();
 </script>

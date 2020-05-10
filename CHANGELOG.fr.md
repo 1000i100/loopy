@@ -19,12 +19,10 @@ et ce projet adhère au [versionnage sémantique](https://semver.org/spec/v2.0.0
 ##### Interface d'édition
 - un **mode simple** pour garder LOOPY aussi simple qu'avant (prise en main aisée / apprentissage facile). Le mode simple ne contiens que ce qui était dans la v1 (et v1.1).
 - un **mode avancé** pour débrider le potentiel de créativité avec les fonctionnalités de la V2.
-
-
-- add a help shortcut `?` for each features linked to a page with some explanations and use-case examples
-- a global switch between **colorAesthetic**  and **colorLogic** mode to allow the use of color to unambiguous different kind of signals and nodes.
-- zoom in and out (or drag with move tool) in the scene to explore big system.
-- select the **camera mode** to use in play mode.
+- ajout pour chaque fonctionnalité d'un `?` pour accéder à l'aide contextuelle avec exemple d'usage.
+- un commutateur entre mode **colorAesthetic** et **colorLogic** pour permettre l'usage des couleurs comme différenciateur de types de signaux et noeuds.
+- zoom avec la molette de souris (ou cliqué déplacé avec l'outil main) dans la scène pour naviguer dans les modèles les plus vastes.
+- sélectionné le **mode de camera** à utiliser en mode lecture.
 
 ##### Play mode cameras
 - **scene cam.** : (resize to scene) the camera scale to show all visible elements.
@@ -101,7 +99,7 @@ et ce projet adhère au [versionnage sémantique](https://semver.org/spec/v2.0.0
 - node text now have a white halo to improve readability.
 
 
-## [Version 1.1] - 2017-04-11 (by [Nicky Case])
+## [Version 1.1] - 2017-04-11 (par [Nicky Case])
 ### Added
 - save as file, to store your work (system model) in your computer for backup and future improvement (and for big system that don't fit in the url)
 - load from file, to load local or downloaded system models.
@@ -112,7 +110,7 @@ et ce projet adhère au [versionnage sémantique](https://semver.org/spec/v2.0.0
 - better distribution of "signals"
 
 
-## [1.0.0] - 2017-02-23  (by [Nicky Case])
+## [1.0.0] - 2017-02-23 (par [Nicky Case])
 ### Added
 
 ##### Edit mode features
