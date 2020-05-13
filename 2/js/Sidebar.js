@@ -9,6 +9,29 @@ function Sidebar(loopy){
 	const self = this;
 	PageUI.call(self, document.getElementById("sidebar"));
 
+	const sideBarSwitch = document.createElement("div");
+	sideBarSwitch.id = "sidebarSwitch";
+	sideBarSwitch.innerHTML = '❯';
+	sideBarSwitch.onclick = function(){
+		const sidebar = self.dom;
+		const canvasses = document.getElementById("canvasses");
+		let visible= false;
+		if(!sidebar.style.right || sidebar.style.right==="0px") visible = true;
+		if(visible) {
+			sidebar.style.right = '-300px';
+			sideBarSwitch.innerHTML = '❮';
+			canvasses.style.right = '0px';
+			sideBarSwitch.style.right = '0px';
+		} else {
+			sidebar.style.right = '0px';
+			sideBarSwitch.innerHTML = '❯';
+			canvasses.style.right = '300px';
+			sideBarSwitch.style.right = '300px';
+		}
+		publish("resize");
+	}
+	self.dom.parentNode.appendChild(sideBarSwitch);
+
 	// Edit
 	self.edit = function(object){
 		self.showPage(object._CLASS_);
@@ -119,8 +142,8 @@ function SidebarPage(){
 	self.hide = function(){ self.dom.style.display="none"; self.onhide(); };
 	self.show = function(){
 		self.dom.style.display="block";
-		self.dom.classList.remove("compact");
-		if(self.dom.offsetHeight>innerHeight) self.dom.classList.add("compact");
+		//self.dom.classList.remove("compact");
+		//if(self.dom.offsetHeight>innerHeight) self.dom.classList.add("compact");
 		self.onshow();
 	};
 

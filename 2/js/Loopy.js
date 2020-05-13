@@ -239,6 +239,7 @@ function Loopy(config){
 		// Hide all that UI
 		self.toolbar.dom.style.display = "none";
 		self.sidebar.dom.style.display = "none";
+		document.getElementById("sidebarSwitch").style.display = "none";
 
 		// If *NO UI AT ALL*
 		const noUI = !!parseInt(_getParameterByName("no_ui")); // force to Boolean
