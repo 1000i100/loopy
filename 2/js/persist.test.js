@@ -132,3 +132,19 @@ testEqual(`factoryRatio encode decode like it should ?`, 223, async ()=>{
         } );
 
 }
+/** cumulative import bumpIdsToAvoidMergeCollision */{
+    testEqual(`bumpIdsToAvoidMergeCollision bump newModel id to avoid active model ids`,`{"nodes":[{"id":2},{"id":3},{"id":4}],"edges":[{"from":2,"to":3},{"from":4,"to":3}]}`,
+        async ()=>{
+            const existingModel = {nodes:[{id:0,old:true},{id:1,old:true}]};
+            const toBumpModel = {nodes:[{id:0},{id:1},{id:2}],edges:[{from:0,to:1},{from:2,to:1}]};
+            const res = bumpIdsToAvoidMergeCollision(toBumpModel,existingModel);
+            return JSON.stringify(res);
+        } );
+    testEqual(`bumpIdsToAvoidMergeCollision can use activeModel as reference`,`{"nodes":[{"id":2},{"id":3},{"id":4}],"edges":[{"from":2,"to":3},{"from":4,"to":3}]}`,
+        async ()=>{
+            loopy.model = {nodes:[{id:0,old:true},{id:1,old:true}]};
+            const toBumpModel = {nodes:[{id:0},{id:1},{id:2}],edges:[{from:0,to:1},{from:2,to:1}]};
+            const res = bumpIdsToAvoidMergeCollision(toBumpModel);
+            return JSON.stringify(res);
+        } );
+}

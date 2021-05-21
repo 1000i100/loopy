@@ -91,6 +91,7 @@ et ce projet adhère au [versionnage sémantique](https://semver.org/spec/v2.0.0
 - keep colorLogic selected setting in colorAesthetic mode but display warning in the UI
 - added `json export` to export human readable json (old `save to file` now save a compressed file like `save as link` does now)
 - added `load from url` to explain how to include in link an external loopy data file.
+- added `import extra file` to merge a model (saved in a file) to an existing one (allready loaded).
 
 ### Changed
 - **save as link** now store data in binary with lzma compression then base64 conversion.

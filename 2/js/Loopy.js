@@ -34,7 +34,7 @@ function Loopy(config){
 
 	// Mouse
 	Mouse.init(document.getElementById("canvasses")); // TODO: ugly fix, ew
-	
+
 	// Model
 	self.model = new Model(self);
 
@@ -173,7 +173,9 @@ function Loopy(config){
 		document.body.removeChild(element);
 	});
 
-	subscribe("import/file", function(){
+	subscribe("load/file", ()=> importFileHandler(false));
+	subscribe("import/file", ()=> importFileHandler(true));
+	function importFileHandler(mergeWithCurrent){
 		let input = document.createElement('input');
 		input.type = 'file';
 		input.onchange = e => {
@@ -181,10 +183,10 @@ function Loopy(config){
 			const file = e.target.files[0];
 			const reader = new FileReader();
 			reader.readAsArrayBuffer(file);
-			reader.onload = readerEvent => loopy.model.importModel(deserializeFromArrayBuffer(readerEvent.target.result));
+			reader.onload = readerEvent => loopy.model.importModel(deserializeFromArrayBuffer(readerEvent.target.result),mergeWithCurrent);
 		};
 		input.click();
-	});
+	}
 
 	self.saveToURL = function(embed){
 
@@ -206,7 +208,7 @@ function Loopy(config){
 
 		return historyLink;
 	};
-	
+
 	// "BLANK START" DATA:
 	const _blankData = "[[[1,403,223,1,%22something%22,4],[2,405,382,1,%22something%2520else%22,5]],[[2,1,94,-1,0],[1,2,89,1,0]],[[609,311,%22need%2520ideas%2520on%2520what%2520to%250Asimulate%253F%2520how%2520about%253A%250A%250A%25E3%2583%25BBtechnology%250A%25E3%2583%25BBenvironment%250A%25E3%2583%25BBeconomics%250A%25E3%2583%25BBbusiness%250A%25E3%2583%25BBpolitics%250A%25E3%2583%25BBculture%250A%25E3%2583%25BBpsychology%250A%250Aor%2520better%2520yet%252C%2520a%250A*combination*%2520of%250Athose%2520systems.%250Ahappy%2520modeling!%22]],2%5D";
 

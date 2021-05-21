@@ -64,7 +64,7 @@ function Model(loopy){
 				i--; // move index back, coz it's been killed
 			}
 		}
-		
+
 	};
 
 
@@ -206,7 +206,7 @@ function Model(loopy){
 	// SHOULD WE DRAW?
 	const drawCountdownFull = 7*60; // two-second buffer!
 	let drawCountdown = drawCountdownFull;
-	
+
 	// ONLY IF MOUSE MOVE / CLICK
 	subscribe("mousemove", function(){ drawCountdown=drawCountdownFull; });
 	subscribe("mousedown", function(){ drawCountdown=drawCountdownFull; });
@@ -287,8 +287,10 @@ function Model(loopy){
 	//////////////////
 
 
-	self.importModel = (newModel)=>{
-		self.clear();
+	self.importModel = (newModel, mergeWithCurrent= false)=>{
+		if(mergeWithCurrent) newModel = bumpIdsToAvoidMergeCollision(newModel);
+		else self.clear();
+
 		for(let key in newModel.globals)loopy[key] = newModel.globals[key];
 		if(loopy.embed) loopy.embedded = 1;
 		applyInitialPropEffects(loopy);

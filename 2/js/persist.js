@@ -68,6 +68,20 @@ function legacyIdFix(newModel){
         }
     });
 }
+function bumpIdsToAvoidMergeCollision(toBumpModel, existingModel = loopy.model){
+    const nodesBumpAmount = existingModel.nodes.length;
+    for(let i = toBumpModel.nodes.length-1;i>=0;i--){
+        const oldId = i;
+        const newId = nodesBumpAmount + oldId;
+        toBumpModel.nodes[oldId].id = newId;
+        toBumpModel.edges.forEach(edge=>{
+            if(edge.from===oldId) edge.from=newId;
+            if(edge.to===oldId) edge.to=newId;
+        });
+    }
+    const bumpedModel = toBumpModel;
+    return bumpedModel;
+}
 
 function serializeToUrl (embed){
     const alternatives = []
@@ -138,6 +152,7 @@ function extractArea (bitArray,typeStr,entitiesSizes,entitiesCount,entitiesCount
     bitArray.setOffset(areaStart);
     const typeIndex = objTypeToTypeIndex(typeStr);
     if(!entitiesCount[typeIndex]) return [];
+    //if(!entitiesCountVolume) entitiesCountVolume = entitiesCount;
     bitArray.rotate(entitiesCountVolume[typeIndex],entitiesSizes[typeIndex],areaStart);
     bitArray.setOffset(areaStart);
     const entities = [];
@@ -188,8 +203,9 @@ function serializeToBinary(embed, bytesSize=true,bytesEntitiesCount=true,bytesAl
     if(bin.buffer.byteLength < compressedBin.length) return bin;
     return compressedBin;
 }
+function newEmptyModel(){ return {globals:{},nodes:[],edges:[],labels:[]}; }
 function deserializeFromBinary (dataUint8Array){
-    const newModel = {globals:{},nodes:[],edges:[],labels:[]};
+    const newModel = newEmptyModel();
     let bin = dataUint8Array;
     if(bin[0]===93) bin = LZMA.decompress(dataUint8Array);
     bin = new BitArray(bin);
@@ -233,7 +249,7 @@ function serializeToLegacyJson(embed){
 }
 function deserializeFromLegacyJson (dataString){
     const data = JSON.parse(dataString);
-    const newModel = {globals:{},nodes:[],edges:[],labels:[]};
+    const newModel = newEmptyModel();
     // Get from array!
     const nodes = data[0];
     const edges = data[1];
