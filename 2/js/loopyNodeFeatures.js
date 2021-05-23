@@ -14,8 +14,6 @@ injectProperty("node", "y",{persist:{index:2,binFunc:factoryRatioForXY(),seriali
 /**
  * toggleable visibility in play mode (visible, hidden in play mode, hidden when dead)
  *
- * toggleable interactivity in play mode (read-only, user interactive)
- *
  * custom image url (to load an image for the circle
  *
  * borderless switch (if borderless, scale it up a bit and remove borders)
@@ -66,9 +64,18 @@ injectProperty("node", "init",{
     persist:3,
     sideBar:{
         index: 4,
-        options: [0, 0.16, 0.33, 0.50, 0.66, 0.83, 1],
+        options: [-1, 0, 0.25, 0.50, 0.75, 1],
         //options: [0, 1/6, 2/6, 3/6, 4/6, 5/6, 1],
-        label: "Start Amount :"
+        labelFunc: (v)=>{
+            const cases = [];
+            cases[-1]="Dead";
+            cases[0] ="Empty";
+            cases[0.25] ="25% filled";
+            cases[0.5] ="50% filled";
+            cases[0.75] ="75% filled";
+            cases[1] ="Full";
+            return `${cases[parseInt(v)]} at start`;
+        }
     }
 });
 injectProperty("node", "overflow",{
@@ -130,5 +137,23 @@ injectProperty("node", "foreignColor",{
         labelFunc: (v)=>`Foreign color signal : ${v?'drop':'forward'}`, // delete, deny / transmit
         advanced: true,
         colorLogic:true
+    }
+});
+injectProperty("node", "interactive",{
+    defaultValue:2,
+    persist:12,
+    sideBar:{
+        index: 10,
+        options: [0, 1, 2, 3, 4],
+        labelFunc: (v)=>{
+            const cases = [];
+            cases[0] ="Read-only node";
+            cases[1] ="User can send +";
+            cases[2] ="User can send +/-";
+            cases[3] ="User + & read-only when dead";
+            cases[4] ="User +/- & read-only when dead";
+            return cases[parseInt(v)];
+        },
+        advanced: true
     }
 });

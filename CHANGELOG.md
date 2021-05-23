@@ -47,6 +47,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Overflow threshold** : a node can store signals without forwarding them up to a threshold, and down to another threshold (store signals within a threshold window, forward them outside the window).
 - **Aggregation latency** : bypass thresholds to store signals for a duration before releasing them merged into one.
 - **Death trigger** : choose if a node implode (die) when empty, or explode (die) when full.
+- **Dead at start** initial filling option.
+- **Conditional node interactivity** : you can put some node in read-only (no user interaction), or user can send only positive signal. And the node can be read only when dead.
 
 ##### Arrow advanced features (previously named Edge)
 - **Valency** allows you to act on the signal valency : preserve, invert, filter to keep only positive or negative signal, convert any signal to positive or to negative.

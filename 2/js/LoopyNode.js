@@ -36,14 +36,27 @@ function LoopyNode(model, config){
 	injectedDefaultProps(defaultProperties,objTypeToTypeIndex("node"));
 	_configureProperties(self, config, defaultProperties);
 	// Value: from 0 to 1
-	self.value = self.init;
+	self.initFillRateOrDead = function (){
+		self.value = self.init;
+		if(self.init < 0) {
+			self.value = 0;
+			self.dieWithoutSignal();
+		}
+	}
+	self.initFillRateOrDead();
 	// TODO: ACTUALLY VISUALIZE AN INFINITE RANGE
 	self.bound = function(){ // bound ONLY when changing value.
 		/*var buffer = 1.2;
 		if(self.value<-buffer) self.value=-buffer;
 		if(self.value>1+buffer) self.value=1+buffer;*/
 	};
-
+	function readOnlyRules(){
+		console.log(self.interactive);
+		return self.loopy.mode!==Loopy.MODE_PLAY || self.interactive === 0 || (self.died && self.interactive >= 3);
+	}
+	function isBottomArrow(){
+		return !readOnlyRules() && self.interactive !== 1 && self.interactive !== 3;
+	}
 	// MOUSE.
 	let _controlsVisible = false;
 	let _controlsAlpha = 0;
@@ -52,8 +65,7 @@ function LoopyNode(model, config){
 	let _controlsPressed = false;
 	const _listenerMouseMove = subscribe("mousemove", function(){
 
-		// ONLY WHEN PLAYING
-		if(self.loopy.mode!==Loopy.MODE_PLAY) return;
+		if(readOnlyRules()) return;
 
 		// If moused over this, show it, or not.
 		_controlsSelected = self.isPointInNode(Mouse.x, Mouse.y);
@@ -61,6 +73,7 @@ function LoopyNode(model, config){
 			_controlsVisible = true;
 			self.loopy.showPlayTutorial = false;
 			_controlsDirection = (Mouse.y<self.y) ? 1 : -1;
+			if(!isBottomArrow() && _controlsDirection === -1) _controlsDirection = 0
 		}else{
 			_controlsVisible = false;
 			_controlsDirection = 0;
@@ -69,11 +82,11 @@ function LoopyNode(model, config){
 	});
 	const _listenerMouseDown = subscribe("mousedown",function(){
 
-		if(self.loopy.mode!==Loopy.MODE_PLAY) return; // ONLY WHEN PLAYING
+		if(readOnlyRules()) return;
 		if(_controlsSelected) _controlsPressed = true;
 
-		// IF YOU CLICKED ME...
-		if(_controlsPressed){
+		// IF YOU CLICKED ME... AND this arrow is active
+		if(_controlsPressed && _controlsDirection){
 
 			// Change my value
 			const delta = _controlsDirection*0.33; // HACK: hard-coded 0.33
@@ -86,7 +99,7 @@ function LoopyNode(model, config){
 
 	});
 	const _listenerMouseUp = subscribe("mouseup",function(){
-		if(self.loopy.mode!==Loopy.MODE_PLAY) return; // ONLY WHEN PLAYING
+		if(readOnlyRules()) return;
 		_controlsPressed = false;
 	});
 	const _listenerReset = subscribe("model/reset", function(){
@@ -259,11 +272,12 @@ function LoopyNode(model, config){
 
 		// Otherwise, value = initValue exactly
 		if(self.loopy.mode===Loopy.MODE_EDIT){
-			self.value = self.init;
+			self.initFillRateOrDead();
+
 		}
 
 		// Cursor!
-		if(_controlsSelected) Mouse.showCursor("pointer");
+		if(_controlsSelected && _controlsDirection && !readOnlyRules()) Mouse.showCursor("pointer");
 
 		// Keep value within bounds!
 		self.bound();
@@ -518,26 +532,29 @@ function LoopyNode(model, config){
 			cy = Math.abs(Math.sin(wobble))*10;
 		}
 
-		// Controls!
-		ctx.globalAlpha = _controlsAlpha;
-		ctx.strokeStyle = "rgba(0,0,0,0.8)";
-		// top arrow
-		ctx.beginPath();
-		ctx.moveTo(-cl,-cy-cl);
-		ctx.lineTo(0,-cy-cl*2);
-		ctx.lineTo(cl,-cy-cl);
-		ctx.lineWidth = (_controlsDirection>0) ? 10: 3;
-		if(self.loopy.showPlayTutorial) ctx.lineWidth=6;
-		ctx.stroke();
-		// bottom arrow
-		ctx.beginPath();
-		ctx.moveTo(-cl,cy+cl);
-		ctx.lineTo(0,cy+cl*2);
-		ctx.lineTo(cl,cy+cl);
-		ctx.lineWidth = (_controlsDirection<0) ? 10: 3;
-		if(self.loopy.showPlayTutorial) ctx.lineWidth=6;
-		ctx.stroke();
-
+		if(!readOnlyRules()){
+			// Controls!
+			ctx.globalAlpha = _controlsAlpha;
+			ctx.strokeStyle = "rgba(0,0,0,0.8)";
+			// top arrow
+			ctx.beginPath();
+			ctx.moveTo(-cl,-cy-cl);
+			ctx.lineTo(0,-cy-cl*2);
+			ctx.lineTo(cl,-cy-cl);
+			ctx.lineWidth = (_controlsDirection>0) ? 10: 3;
+			if(self.loopy.showPlayTutorial) ctx.lineWidth=6;
+			ctx.stroke();
+			if(isBottomArrow()){
+				// bottom arrow
+				ctx.beginPath();
+				ctx.moveTo(-cl,cy+cl);
+				ctx.lineTo(0,cy+cl*2);
+				ctx.lineTo(cl,cy+cl);
+				ctx.lineWidth = (_controlsDirection<0) ? 10: 3;
+				if(self.loopy.showPlayTutorial) ctx.lineWidth=6;
+				ctx.stroke();
+			}
+		}
 		// Restore
 		ctx.restore();
 
@@ -569,11 +586,14 @@ function LoopyNode(model, config){
 
 	self.die = function(signal){
 		if(!self.died && self.loopy.mode===Loopy.MODE_PLAY) self.sendSignal({delta:-.33,color:signal?signal.color:self.hue,vital:true});
+		self.dieWithoutSignal();
+	};
+	self.dieWithoutSignal = function(){
 		self.died=true;
 		if(self.hue!==6) self.oldhue = self.hue;
 		self.hue=6;
 		publish("died",[self]);
-	};
+	}
 	self.live = function(signal){
 		if(self.died && self.loopy.mode===Loopy.MODE_PLAY) self.sendSignal({delta:.33,color:signal?signal.color:self.hue,vital:true});
 		self.died=false;
