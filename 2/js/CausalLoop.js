@@ -49,7 +49,7 @@ angular.module('myApp', ['CLDService'])
 
     if (!$scope.userid) {
         // 暂时没有访客模式，直接跳转到登录页面
-        window.location.href = "/2/login.html";
+        window.location.href = "login.html";
     }
 
     this.IsChanged = false;
@@ -95,7 +95,7 @@ angular.module('myApp', ['CLDService'])
         localStorage.removeItem("userid");
 
         // refresh the page to clear the data
-        window.location.href = "/2/login.html";
+        window.location.href = "login.html";
     }
 
     $scope.handleClick = function(item) {    
