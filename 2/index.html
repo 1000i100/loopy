@@ -1,103 +1,260 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
-    
-    <!-- META -->
-	<title>W.H.Y</title>
-    	<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
-	<meta charset="utf-8">
-	<link rel="icon" type="image/png" href="css/icons/favicon.png">
-	<!-- mobile don't randomly zoom -->
-	<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'/>
-	<!-- Schema.org markup for Google+ -->
-	<meta itemprop="name" content="WisdomC">
-	<meta itemprop="description" content="a website for thinking and sharing wisdom">
-	<meta itemprop="image" content="http://ncase.me/loopy/social/thumbnail.png">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Webpixels">
+    <title>W.H.Y – 记录、分享智慧的网站</title>
+    <!-- Preloader -->
+    <style>
+        @keyframes hidePreloader {
+            0% {
+                width: 100%;
+                height: 100%;
+            }
 
-	<!-- Twitter Card data: SMALL -->
-	<meta name="twitter:card" content="summary"/>
-	<meta name="twitter:site" content="@ncasenmare"/>
-	<meta name="twitter:title" content="LOOPY!"/>
-	<meta name="twitter:description" content="a website for thinking and sharing wisdom"/>
-	<meta name="twitter:creator" content="@ncasenmare">
-	<meta name="twitter:image" content="http://ncase.me/loopy/social/thumbnail_small.png"/>
+            100% {
+                width: 0;
+                height: 0;
+            }
+        }
 
-	<!-- Open Graph data -->
-	<meta property="og:title" content="LOOPY!">
-	<meta property="og:type" content="website">
-	<meta property="og:url" content="https://lo0p.it/">
-	<meta property="og:image" content="http://ncase.me/loopy/social/thumbnail.png">
-	<meta property="og:description" content="a website for thinking and sharing wisdom">
+        body>div.preloader {
+            position: fixed;
+            background: white;
+            width: 100%;
+            height: 100%;
+            z-index: 1071;
+            opacity: 0;
+            transition: opacity .5s ease;
+            overflow: hidden;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-    <!-- Styles! -->
-	<link href="css/loopy.css" rel="stylesheet"/>
-	<link href="css/balloon.css" rel="stylesheet"/>
+        body:not(.loaded)>div.preloader {
+            opacity: 1;
+        }
 
+        body:not(.loaded) {
+            overflow: hidden;
+        }
+
+        body.loaded>div.preloader {
+            animation: hidePreloader .5s linear .5s forwards;
+        }
+    </style>
+    <script>
+        window.addEventListener("load", function() {
+            setTimeout(function() {
+                document.querySelector('body').classList.add('loaded');
+            }, 300);
+        });
+    </script>
+    <!-- Favicon -->
+    <link rel="icon" href="assets/img/brand/favicon.png" type="image/png"><!-- Font Awesome -->
+    <link rel="stylesheet" href="assets/libs/@fortawesome/fontawesome-free/css/all.min.css">
+    <!-- Quick CSS -->
+    <link rel="stylesheet" href="assets/css/quick-website.css" id="stylesheet">
 </head>
-<body style="opacity:0">
 
-	<!-- Loopy & Ink -->
-	<div id="canvasses"></div>
+<body>
+    <!-- Preloader -->
+    <div class="preloader">
+        <div class="spinner-border text-primary" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <div class="modal fade" tabindex="-1" role="dialog" id="modal-cookies" data-backdrop="false" aria-labelledby="modal-cookies" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-aside left-4 right-4 bottom-4">
+            <div class="modal-content bg-dark-dark">
+                <div class="modal-body">
+                    <!-- Text -->
+                    <p class="text-sm text-white mb-3">
+                        We use cookies so that our themes work for you. By using our website, you agree to our use of cookies.
+                    </p>
+                    <!-- Buttons -->
+                    <a href="pages/utility/terms.html" class="btn btn-sm btn-white" target="_blank">Learn more</a>
+                    <button type="button" class="btn btn-sm btn-primary mr-2" data-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white">
+        <div class="container">
+            <!-- Brand -->
+            <a class="navbar-brand" href="index.html">
+                <img alt="Image placeholder" src="assets/img/brand/dark.svg" id="navbar-logo">
+            </a>
+            <!-- Toggler -->
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <!-- Collapse -->
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav mt-4 mt-lg-0 ml-auto">
+                    <li class="nav-item ">
+                        <a class="nav-link" href="index.html">首页</a>
+                    </li>
+                    <li class="nav-item dropdown dropdown-animate" data-toggle="hover">
+                        <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">探索</a>
+                        <div class="dropdown-menu dropdown-menu-single">
+                            <a href="main.html" class="dropdown-item">创作你的系统图</a>
+                            <a href="contact.html" class="dropdown-item">联系我们</a>
+                            <div class="dropdown-divider"></div>
+                            <a href="login.html" class="dropdown-item">登录</a>
+                        </div>
+                    </li>
+                </ul>
+                <!-- Button -->
+                <a class="navbar-btn btn btn-sm btn-primary d-none d-lg-inline-block ml-3" href="login.html">
+                    登录
+                </a>
+                <!-- Mobile button -->
+                <div class="d-lg-none text-center">
+                    <a href="https://webpixels.io/themes/quick-website-ui-kit" class="btn btn-block btn-sm btn-warning">See more details</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- Main content -->
+    <section class="slice py-7">
+        <div class="container">
+            <div class="row row-grid align-items-center">
+                <div class="col-12 col-md-5 col-lg-6 order-md-2 text-center">
+                    <!-- Image -->
+                    <figure class="w-100">
+                        <img alt="Image placeholder" src="assets/img/svg/illustrations/illustration-3.svg" class="img-fluid mw-md-120">
+                    </figure>
+                </div>
+                <div class="col-12 col-md-7 col-lg-6 order-md-1 pr-md-5">
+                    <!-- Heading -->
+                    <h1 class="display-5 text-center text-md-left mb-3">
+                        表达和分享 <strong class="display-3 text-primary">你的思维</strong>
+                    </h1>
+                    <!-- Text -->
+                    <p class="lead text-center text-md-left text-muted">用系统图来表达和分享你的思维，让你的思维更清晰，有条理。</p>
+                    <!-- Buttons -->
+                    <div class="text-center text-md-left mt-5">
+                        <a href="main.html" class="btn btn-primary btn-icon">
+                            <span class="btn-inner--text">开始创作</span>
+                            <span class="btn-inner--icon"><i data-feather="chevron-right"></i></span>
+                        </a>
+                        <a href="" class="btn btn-neutral btn-icon d-none d-lg-inline-block">查看示例</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="slice slice-lg pt-lg-6 pb-0 pb-lg-6 bg-section-secondary">
+        <div class="container">
+            <!-- Title -->
+            <!-- Section title -->
+            <div class="row mb-5 justify-content-center text-center">
+                <div class="col-lg-6">
+                    <h2 class=" mt-4">使用场景</h2>
+                </div>
+            </div>
+            <!-- Card -->
+            <div class="row mt-5">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body pb-5">
+                            <div class="pt-4 pb-5">
+                                <img src="assets/img/svg/illustrations/illustration-5.svg" class="img-fluid img-center" style="height: 150px;" alt="Illustration" />
+                            </div>
+                            <h5 class="h4 lh-130 mb-3">Unleash you creativity</h5>
+                            <p class="text-muted mb-0">Quick Website UI Kit (FREE) contains components and pages that are easy to customize and change.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body pb-5">
+                            <div class="pt-4 pb-5">
+                                <img src="assets/img/svg/illustrations/illustration-6.svg" class="img-fluid img-center" style="height: 150px;" alt="Illustration" />
+                            </div>
+                            <h5 class="h4 lh-130 mb-3">Get more results</h5>
+                            <p class="text-muted mb-0">Quick Website UI Kit (FREE) contains components and pages that are easy to customize and change.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body pb-5">
+                            <div class="pt-4 pb-5">
+                                <img src="assets/img/svg/illustrations/illustration-7.svg" class="img-fluid img-center" style="height: 150px;" alt="Illustration" />
+                            </div>
+                            <h5 class="h4 lh-130 mb-3">Increase your audience</h5>
+                            <p class="text-muted mb-0">Quick Website UI Kit (FREE) contains components and pages that are easy to customize and change.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <footer class="position-relative" id="footer-main">
+        <div class="footer pt-lg-7 footer-dark bg-dark">
+            <!-- SVG shape -->
+            <div class="shape-container shape-line shape-position-top shape-orientation-inverse">
+                <svg width="2560px" height="100px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="none" x="0px" y="0px" viewBox="0 0 2560 100" style="enable-background:new 0 0 2560 100;" xml:space="preserve" class=" fill-section-secondary">
+                    <polygon points="2560 0 2560 100 0 100"></polygon>
+                </svg>
+            </div>
+            <!-- Footer -->
+            <div class="container pt-4">                    
+                <hr class="divider divider-fade divider-dark my-4">
+                <div class="row align-items-center justify-content-md-between pb-4">
+                    <div class="col-md-6">
+                        <div class="copyright text-sm font-weight-bold text-center text-md-left">
+                            &copy; 2023 <a href="https://webpixels.io" class="font-weight-bold" target="_blank">W.H.Y</a>. All rights reserved
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <ul class="nav justify-content-center justify-content-md-end mt-3 mt-md-0">
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">
+                                    Terms
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">
+                                    Privacy
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">
+                                    Cookies
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Core JS  -->
+    <script src="assets/libs/jquery/dist/jquery.min.js"></script>
+    <script src="assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/libs/svg-injector/dist/svg-injector.min.js"></script>
+    <script src="assets/libs/feather-icons/dist/feather.min.js"></script>
+    <!-- Quick JS -->
+    <script src="assets/js/quick-website.js"></script>
 
-	<!-- The Tools' UI -->
-	<div id="toolbar"></div>
-	<div id="playbar"></div>
-	<div id="sidebar"></div>
-
-
-	<!-- MODAL -->
-	<div id="modal_container">
-		<div id="modal_bg"></div>
-		<div id="modal">
-			<div id="modal_close">[×] CLOSE</div>
-			<div id="modal_page"></div>
-		</div>
-	</div>
+    <!-- Feather Icons -->
+    <script>
+        feather.replace({
+            'width': '1em',
+            'height': '1em'
+        })
+    </script>
 </body>
+
 </html>
-
-<!-- Scripts! -->
-
-<!-- Libraries -->
-<script src="js/helpers.js"></script>
-<script src="js/vendors/minpubsub.js"></script>
-<script src="js/vendors/lzma_worker-min.js"></script>
-<script src="js/vendors/StringView.js"></script>
-<script src="js/BitArray.js"></script>
-<script src="js/Mouse.js"></script>
-<script src="js/Key.js"></script>
-<script src="js/featureInjector.js"></script>
-<script src="js/persist.js"></script>
-
-<!-- Core Simulation Code -->
-<script src="js/Loopy.js?v=5"></script>
-<script src="js/Model.js?v=3"></script>
-<script src="js/LoopyNode.js?v=3"></script>
-<script src="js/Edge.js?v=2"></script>
-<script src="js/Label.js"></script>
-<script src="js/Group.js"></script>
-
-<!-- Extensible features -->
-<script src="js/globalFeatures.js"></script>
-<script src="js/loopyNodeFeatures.js"></script>
-<script src="js/edgeFeatures.js"></script>
-<script src="js/labelFeatures.js"></script>
-<!--<script src="js/groupFeatures.js"></script>-->
-
-<!-- Tools -->
-<script src="js/PageUI.js"></script>
-<script src="js/Sidebar.js?v=2"></script>
-<script src="js/Toolbar.js"></script>
-<script src="js/PlayControls.js"></script>
-<script src="js/Modal.js?v=4"></script>
-<script src="js/Ink.js"></script>
-<script src="js/Dragger.js"></script>
-<script src="js/Eraser.js"></script>
-<script src="js/Labeller.js"></script>
-
-<!-- Start it -->
-<script>
-window.onload = function(){
-	window.loopy = new Loopy();
-};
-</script>

@@ -4,18 +4,11 @@
     persist:0, // reserved
 });*/
 
-/*
+
 injectProperty("loopy", "loopyMode",{
     defaultValue:0,
-    persist:1,
-    sideBar:{
-        index: 1,
-        options: [ 0, 1], // Simple || Advanced
-        label: "LOOPY v2 mode :",
-        oninput: factorySwitchMode("simple","advanced")
-    }
 });
-*/
+
 
 injectProperty("loopy", "colorLogic",{
     defaultValue:0,
@@ -59,13 +52,12 @@ injectProperty("loopy", "beforeAll",{
 */
 
 injectProperty("loopy", "beforeAll",{
-    defaultValue:"hello",
+    defaultValue:"...",
     
     persist:{
-        index:1,
+        index: 1,
         deserializeFunc:decodeURIComponent
     },    
-
 
     sideBar:{
         index: 1,

@@ -165,7 +165,7 @@ function _addMouseEvents(target, onmousedown, onmousemove, onmouseup, onmousewhe
 			// Not Touch
 			_fakeEvent.x = event.offsetX;
 			_fakeEvent.y = event.offsetY;
-			_fakeEvent.wheel = event.deltaY>0?1:event.deltaY<0?-1:0;
+			_fakeEvent.wheel = event.deltaY > 0 ? 1 : event.deltaY < 0 ? -1 : 0;
 		}
 
 		// Mousemove callback
@@ -285,8 +285,14 @@ function _makeErrorFunc(msg){
 	};
 }
 
-function _getParameterByName(name){
-	const url = location.href;
+function _getParameterByName(name, givenURL){
+	var url; 
+	if (givenURL) {
+		url = givenURL;
+	} else {
+		url = location.href;
+	}
+	
 	name = name.replace(/[\[\]]/g, "\\$&");
 	const regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
 	results = regex.exec(url);
