@@ -12,21 +12,21 @@ angular.module('CLDService', [])
     }
 
     var loadURL = function(userid) {
-        return $http.get('https://06acc315-0f75-44e5-9c43-7b77beab5d08-8080-public.ide.workbenchapi.com/CLDs?user_id=' + userid);
+        return $http.get('http://api-daily.yesbetec.com/CLDs?user_id=' + userid);
     };
 
     var create = function(userid) {
-        return $http.post('https://06acc315-0f75-44e5-9c43-7b77beab5d08-8080-public.ide.workbenchapi.com/CLDs?user_id=' + userid);
+        return $http.post('http://api-daily.yesbetec.com/CLDs?user_id=' + userid);
     };
 
     var save = function(userid, SelectedItem) {
         // Issue a POST request to update the data
-        return $http.post('https://06acc315-0f75-44e5-9c43-7b77beab5d08-8080-public.ide.workbenchapi.com/CLDs/' + SelectedItem.id + '?user_id=' + userid, SelectedItem);
+        return $http.post('http://api-daily.yesbetec.com/CLDs/' + SelectedItem.id + '?user_id=' + userid, SelectedItem);
     }
 
     var remove = function(userid, SelectedItem) {
         // Issue a POST request to update the data
-        return $http.delete('https://06acc315-0f75-44e5-9c43-7b77beab5d08-8080-public.ide.workbenchapi.com/CLDs/' + SelectedItem.id + '?user_id=' + userid, SelectedItem);
+        return $http.delete('http://api-daily.yesbetec.com/CLDs/' + SelectedItem.id + '?user_id=' + userid, SelectedItem);
     }   
 
     return {
