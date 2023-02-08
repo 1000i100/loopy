@@ -19,7 +19,7 @@ app.controller("RegisterController", ["$scope", "$http", function ($scope, $http
     $http.post("http://api-daily.yesbetec.com/register", data).then(
       function (response) {
         if (response.data.isOK) {
-          window.location.href = "/2/login.html";
+          window.location.href = "login.html";
         } else {
           $scope.error = response.data.message;
         }
