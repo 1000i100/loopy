@@ -16,7 +16,7 @@ angular.module('CLDService', [])
     };
 
     var getSuggestions = function(userid, sugInput) {
-        return $http.get('http://06acc315-0f75-44e5-9c43-7b77beab5d08-8080-public.ide.workbenchapi.com/suggestions?input=' + sugInput);
+        return $http.get('http://api-daily.yesbetec.com/suggestions?input=' + sugInput);
     };
 
     var create = function(userid) {
