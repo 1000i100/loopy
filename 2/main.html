@@ -38,13 +38,13 @@
       <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
         <ul class="navbar-nav mr-lg-4 w-100">
           <li class="nav-item nav-search d-none d-lg-block w-100">
-            <div class="input-group">
+            <div class="input-group" ng-click="chat()">
               <div class="input-group-prepend">
                 <span class="input-group-text" id="search">
                   <i class="mdi mdi-magnify"></i>
                 </span>
               </div>
-              <input type="text" class="form-control" placeholder="搜索知识点" aria-label="search" aria-describedby="search">
+              <input type="text" class="form-control" placeholder="问问AI" aria-label="search" aria-describedby="search">
             </div>
           </li>
         </ul>
@@ -72,6 +72,8 @@
         </button>
       </div>
     </nav>
+
+
     <!-- partial -->
     <div class="container-fluid page-body-wrapper">
       <!-- partial:partials/_sidebar.html -->
@@ -126,6 +128,50 @@
 	      </div>
       </div>
       <!-- main-panel ends -->
+      <!-- Modal -->
+      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">问问AI</h5>        
+            </div>
+            <div class="modal-body">
+              <ul class="navbar-nav mr-lg-4 w-100">
+                <li class="nav-item nav-search d-none d-lg-block w-100">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="search">
+                        <i class="mdi mdi-magnify"></i>
+                      </span>
+                    </div>
+                    <input type="text" class="form-control" ng-model="sugInput" placeholder="输入一个名词，AI帮你找到影响它的主要因素，e.g. 城镇房价" aria-label="search" ng-keypress="checkKey($event)" aria-describedby="search">
+                  </div>
+                </li>
+                <li>
+                  <!-- add a line to display error message or description -->
+                  <div>{{information}}</div>
+                </li>
+                <li>
+                  <div class="expand" id="ui-basic">
+                    <ul class="nav flex-column sub-menu" id="myList">
+                      <li class="nav-item" ng-repeat="x in Suggestions">
+                        <a href="#" class="list-group-item list-group-item-action flex-column align-items-start active">
+                          <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">{{x.name}}</h5>
+                            <small>{{x.direction}}</small>
+                          </div>
+                          <p class="mb-1">{{x.description}}</p>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
     <!-- page-body-wrapper ends -->
   </div>
@@ -159,16 +205,3 @@
 </body>
 
 </html>
-
-<script>
-  window.onload = function() {
-    
-    $('.nav-item').on('click', function() {
-      $('.nav-item').removeClass('active');
-      $(this).addClass('active');
-    });
-    // const triggerFirstTabEl = document.querySelector('#myList li:first-child a');
-    // triggerFirstTabEl.classList.add('active');
-    // bootstrap.Tab.getInstance(triggerFirstTabEl).show() // Select first tab
-  };
-</script>

@@ -15,6 +15,10 @@ angular.module('CLDService', [])
         return $http.get('http://api-daily.yesbetec.com/CLDs?user_id=' + userid);
     };
 
+    var getSuggestions = function(userid, sugInput) {
+        return $http.get('http://06acc315-0f75-44e5-9c43-7b77beab5d08-8080-public.ide.workbenchapi.com/suggestions?input=' + sugInput);
+    };
+
     var create = function(userid) {
         return $http.post('http://api-daily.yesbetec.com/CLDs?user_id=' + userid);
     };
@@ -31,6 +35,7 @@ angular.module('CLDService', [])
 
     return {
         load: loadURL,
+        getSuggestions: getSuggestions,
         save: save,
         new: create,
         delete: remove,
@@ -87,6 +92,42 @@ angular.module('myApp', ['CLDService'])
 
     this.init = function() {
     }
+
+    $scope.chat = function() {
+        $('#exampleModal').modal('show');
+    }
+
+    $scope.checkKey = function($event) {
+        if ($event.which === 13) {
+            $scope.Suggestions = [];
+            $scope.information = "AI正在瞎编，请耐心等待...";
+
+            myService.getSuggestions($scope.userid, $scope.sugInput).then(function(response) {
+                if (response.data.choices && response.data.choices.length > 0) {
+                    $scope.information = "影响" + $scope.sugInput + "的关键因素有：";
+
+                    response.data.choices.forEach(function(item) {
+                        var lines = item.text.split("\n");
+                        for (var i = 0; i < lines.length; i++) {
+                            var line = lines[i];
+                            if (line.length < 5) {
+                                continue;
+                            }
+
+                            let parts = line.split("（")
+                            let part1 = parts[0]
+                            let part2 = parts[1].split("）：")[0]
+                            let part3 = parts[1].split("）：")[1]
+        
+                            $scope.Suggestions.push(new Suggestion(part1, part2, part3));
+                        }
+                    })
+                } else {
+                    $scope.information = response.data.message;
+                }
+            })
+        }
+    };
 
     $scope.logout = function() {
         $scope.userid = "";
@@ -148,5 +189,12 @@ function CausalLoop(id, name, body) {
 
     // JSON for the causal loop object
     this.body = body;
+}
+
+// Create a CaualLoop object, which has name, json for its body
+function Suggestion(name, direction, description) {
+    this.name = name;
+    this.direction = direction;
+    this.description = description;
 }
 
