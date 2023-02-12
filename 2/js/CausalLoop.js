@@ -102,7 +102,8 @@ angular.module('myApp', ['CLDService'])
             $scope.Suggestions = [];
             $scope.information = "AI正在瞎编，请耐心等待...";
 
-            myService.getSuggestions($scope.userid, $scope.sugInput).then(function(response) {
+            myService.getSuggestions($scope.userid, $scope.sugInput)
+            .then(function(response) {
                 if (response.data.choices && response.data.choices.length > 0) {
                     $scope.information = "影响" + $scope.sugInput + "的关键因素有：";
 
@@ -125,7 +126,9 @@ angular.module('myApp', ['CLDService'])
                 } else {
                     $scope.information = response.data.message;
                 }
-            })
+            }, function(error) {
+                $scope.information = error;
+            });
         }
     };
 
