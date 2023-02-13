@@ -16,8 +16,31 @@ angular.module('CLDService', [])
     };
 
     var getSuggestions = function(userid, sugInput) {
-        return $http.get('http://api-daily.yesbetec.com/suggestions?input=' + sugInput);
+        prompt = "列出来影响 " + sugInput + " 的主要因素，不多于5个，按重要程序排序，并给出因素的名字，用正向或者负向其中一个来表达影响的方向并用小括号包围，以及对该因素一步一步地详细的解释";
+        return chat(prompt);
     };
+
+    var getInferences = function(userid, input) {
+        prompt = "我决定 " + input + "。列出来上述决定会导致的主要后果，不多于5个，按重要程序排序，并给出后果的名字，用正向或者负向其中一个来表达影响的方向并用小括号包围，以及对该影响一步一步地详细的解释";
+        return chat(prompt);
+    };
+
+    var chat = function(prompt) {
+        return $http({
+            method: 'POST',
+            url: 'https://api.openai.com/v1/completions',
+            headers: {
+                'Authorization': 'Bearer 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',
+                'Content-Type': 'application/json'
+            },
+            data: {
+                "model": "text-davinci-003",
+                "prompt": prompt,
+                "max_tokens": 2048,
+                "temperature": 0,
+            }
+        })
+    }
 
     var create = function(userid) {
         return $http.post('http://api-daily.yesbetec.com/CLDs?user_id=' + userid);
@@ -36,6 +59,7 @@ angular.module('CLDService', [])
     return {
         load: loadURL,
         getSuggestions: getSuggestions,
+        getInferences: getInferences,
         save: save,
         new: create,
         delete: remove,
@@ -100,7 +124,7 @@ angular.module('myApp', ['CLDService'])
     $scope.checkKey = function($event) {
         if ($event.which === 13) {
             $scope.Suggestions = [];
-            $scope.information = "AI正在瞎编，请耐心等待...";
+            $scope.information = "AI正在抓耳挠腮，请耐心等待，大约需要30秒...";
 
             myService.getSuggestions($scope.userid, $scope.sugInput)
             .then(function(response) {
@@ -128,6 +152,42 @@ angular.module('myApp', ['CLDService'])
                 }
             }, function(error) {
                 $scope.information = error;
+            });
+        }
+    };
+
+    // A function to require suggestion from remote API and parse the result
+    $scope.checkInferenceKey = function($event) {
+        if ($event.which === 13) {
+            $scope.Inferences = [];
+            $scope.inferenceInformation = "AI正在抓耳挠腮，请耐心等待，大约需要30秒...";
+
+            myService.getInferences($scope.userid, $scope.inferenceInput)
+            .then(function(response) {
+                if (response.data.choices && response.data.choices.length > 0) {
+                    $scope.inferenceInformation = $scope.inferenceInput + "导致的结果如下：";
+
+                    response.data.choices.forEach(function(item) {
+                        var lines = item.text.split("\n");
+                        for (var i = 0; i < lines.length; i++) {
+                            var line = lines[i];
+                            if (line.length < 5) {
+                                continue;
+                            }
+
+                            let parts = line.split("（")
+                            let part1 = parts[0]
+                            let part2 = parts[1].split("）：")[0]
+                            let part3 = parts[1].split("）：")[1]
+        
+                            $scope.Inferences.push(new Suggestion(part1, part2, part3));
+                        }
+                    })
+                } else {
+                    $scope.inferenceInformation = response.data.message;
+                }
+            }, function(error) {
+                $scope.inferenceInformation = error;
             });
         }
     };

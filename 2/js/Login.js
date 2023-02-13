@@ -18,6 +18,10 @@ app.controller("LoginController", ["$scope", "$http", function ($scope, $http) {
 			data: JSON.stringify(data),
 			contentType: "application/json; charset=utf-8",
 			dataType: "json",
+			headers: {
+				"connection": "keep-alive",
+        "keep-alive": "timeout=60, max=100",
+    	},
 			success: function (response) {
 				if (response.userid) {
           localStorage.setItem("userid", response.userid);

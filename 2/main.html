@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-  <title>W.H.Y</title>
+  <title>CasualAtlas – 表达、分享您的思维</title>
   <meta charset="utf-8">
   <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
 
@@ -28,7 +28,7 @@
     <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row" >
       <div class="navbar-brand-wrapper d-flex justify-content-center">
         <div class="navbar-brand-inner-wrapper d-flex justify-content-between align-items-center w-100">  
-          <a class="navbar-brand brand-logo" href="index.html"><img src="template/images/logo.svg" alt="logo"/></a>
+          <a class="navbar-brand brand-logo" href="index.html"><img src="assets/img/brand/dark.svg" alt="logo"/></a>
           <a class="navbar-brand brand-logo-mini" href="index.html"><img src="template/images/logo-mini.svg" alt="logo"/></a>
           <button class="navbar-toggler align-self-center" type="button" data-toggle="minimize">
             <span class="mdi mdi-sort-variant"></span>
@@ -57,7 +57,7 @@
             <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
               <a class="dropdown-item">
                 <i class="mdi mdi-settings text-primary"></i>
-                设置
+                设置(TBD)
               </a>
               <a class="dropdown-item" ng-click="logout()">
                 <i class="mdi mdi-logout text-primary"></i>
@@ -82,7 +82,7 @@
           <li class="nav-item active">
             <a class="nav-link" data-bs-toggle="collapse" href="#ui-basic" aria-expanded="true" aria-controls="ui-basic">
               <i class="mdi mdi-circle-outline menu-icon"></i>
-              <span class="menu-title">你的知识点</span>
+              <span class="menu-title">你的知识库</span>
               <i class="menu-arrow"></i>
             </a>
             <div class="expand" id="ui-basic">
@@ -92,9 +92,9 @@
             </div>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="template/documentation/documentation.html">
+            <a class="nav-link" href="">
               <i class="mdi mdi-file-document-box-outline menu-icon"></i>
-              <span class="menu-title">社区</span>
+              <span class="menu-title">社区(正在建设中...)</span>
             </a>
           </li>
         </ul>
@@ -111,13 +111,13 @@
                   </div>
                   <div class="d-flex">
                     <button type="button" ng-click="save()" class="btn btn-light bg-white btn-icon me-3 d-none d-md-block ">
-                      <i class="mdi mdi-content-save text-muted"></i>
+                      <img src="assets/img/brand/save.svg"  />
                     </button>
                     <button type="button" ng-click="new()" class="btn btn-light bg-white btn-icon me-3 mt-2 mt-xl-0">
-                      <i class="mdi mdi-file-plus-outline text-muted"></i>
+                      <img src="assets/img/brand/plus.svg"  />
                     </button>
                     <button type="button" ng-click="delete()" class="btn btn-light bg-white btn-icon me-3 mt-2 mt-xl-0">
-                      <i class="mdi mdi-file-remove text-muted"></i>
+                      <img src="assets/img/brand/close.svg"  />
                     </button>
                   </div>
                 </div>
@@ -136,38 +136,90 @@
               <h5 class="modal-title" id="exampleModalLabel">问问AI</h5>        
             </div>
             <div class="modal-body">
-              <ul class="navbar-nav mr-lg-4 w-100">
-                <li class="nav-item nav-search d-none d-lg-block w-100">
-                  <div class="input-group">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" id="search">
-                        <i class="mdi mdi-magnify"></i>
-                      </span>
-                    </div>
-                    <input type="text" class="form-control" ng-model="sugInput" placeholder="输入一个名词，AI帮你找到影响它的主要因素，e.g. 城镇房价" aria-label="search" ng-keypress="checkKey($event)" aria-describedby="search">
-                  </div>
+              <ul class="nav nav-pills mb-3" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link active" id="cause-tab" data-bs-toggle="tab" data-bs-target="#cause" type="button" role="tab" aria-controls="cause" aria-selected="true">探 因</button>
                 </li>
-                <li>
-                  <p></p>
-                  <!-- add a line to display error message or description -->
-                  <div>{{information}}</div>
-                </li>
-                <li>
-                  <div class="expand" id="ui-basic">
-                    <ul class="nav flex-column sub-menu" id="myList">
-                      <li class="nav-item" ng-repeat="x in Suggestions">
-                        <a href="#" class="list-group-item list-group-item-action flex-column align-items-start active">
-                          <div class="d-flex w-100 justify-content-between">
-                            <h5 class="mb-1">{{x.name}}</h5>
-                            <small>{{x.direction}}</small>
-                          </div>
-                          <p class="mb-1">{{x.description}}</p>
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link" id="inference-tab" data-bs-toggle="tab" data-bs-target="#inference" type="button" role="tab" aria-controls="inference" aria-selected="false">推 理</button>
                 </li>
               </ul>
+              <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="cause" role="tabpanel" aria-labelledby="cause-tab">
+                  <p></p>
+                  <p>请输入一个词，AI帮您找到影响它的主要因素：</p>
+                  <ul class="navbar-nav mr-lg-4 w-100">
+                    <li class="nav-item nav-search d-none d-lg-block w-100">
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text" id="search">
+                            <i class="mdi mdi-magnify"></i>
+                          </span>
+                        </div>
+                        
+                        <input type="text" class="form-control" ng-model="sugInput" placeholder="e.g. 城镇房价" aria-label="search" ng-keypress="checkKey($event)" aria-describedby="search">
+                      </div>
+                    </li>
+                    <li>
+                      <p></p>
+                      <!-- add a line to display error message or description -->
+                      <div>{{information}}</div>
+                    </li>
+                    <li>
+                      <div class="expand" id="ui-basic">
+                        <ul class="nav flex-column sub-menu" id="myList">
+                          <li class="nav-item" ng-repeat="x in Suggestions">
+                            <a href="#" class="list-group-item list-group-item-action flex-column align-items-start active">
+                              <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">{{x.name}}</h5>
+                                <small>{{x.direction}}</small>
+                              </div>
+                              <p class="mb-1">{{x.description}}</p>
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+                <div class="tab-pane fade" id="inference" role="tabpanel" aria-labelledby="inference-tab">
+                  <p></p>
+                  <p>我决定...</p>
+                  <ul class="navbar-nav mr-lg-4 w-100">
+                    <li class="nav-item nav-search d-none d-lg-block w-100">
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text" id="search">
+                            <i class="mdi mdi-magnify"></i>
+                          </span>
+                        </div>
+                        
+                        <input type="text" class="form-control" ng-model="inferenceInput" placeholder="公布公司内部各岗位的薪酬范围" aria-label="search" ng-keypress="checkInferenceKey($event)" aria-describedby="search">
+                      </div>
+                    </li>
+                    <li>
+                      <p></p>
+                      <!-- add a line to display error message or description -->
+                      <div>{{inferenceInformation}}</div>
+                    </li>
+                    <li>
+                      <div class="expand" id="ui-basic">
+                        <ul class="nav flex-column sub-menu" id="myList">
+                          <li class="nav-item" ng-repeat="x in Inferences">
+                            <a href="#" class="list-group-item list-group-item-action flex-column align-items-start active">
+                              <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">{{x.name}}</h5>
+                                <small>{{x.direction}}</small>
+                              </div>
+                              <p class="mb-1">{{x.description}}</p>
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
         </div>
