@@ -15,22 +15,22 @@ angular.module('CLDService', [])
         return $http.get('http://api-daily.yesbetec.com/CLDs?user_id=' + userid);
     };
 
-    var getSuggestions = function(userid, sugInput) {
+    var getSuggestions = function(userid, sugInput, secret) {
         prompt = "列出来影响 " + sugInput + " 的主要因素，不多于5个，按重要程序排序，并给出因素的名字，用正向或者负向其中一个来表达影响的方向并用小括号包围，以及对该因素一步一步地详细的解释";
-        return chat(prompt);
+        return chat(prompt, secret);
     };
 
-    var getInferences = function(userid, input) {
+    var getInferences = function(userid, input, secret) {
         prompt = "我决定 " + input + "。列出来上述决定会导致的主要后果，不多于5个，按重要程序排序，并给出后果的名字，用正向或者负向其中一个来表达影响的方向并用小括号包围，以及对该影响一步一步地详细的解释";
-        return chat(prompt);
+        return chat(prompt, secret);
     };
 
-    var chat = function(prompt) {
+    var chat = function(prompt, secret) {
         return $http({
             method: 'POST',
             url: 'https://api.openai.com/v1/completions',
             headers: {
-                'Authorization': 'Bearer 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',
+                'Authorization': secret,
                 'Content-Type': 'application/json'
             },
             data: {
@@ -56,6 +56,10 @@ angular.module('CLDService', [])
         return $http.delete('http://api-daily.yesbetec.com/CLDs/' + SelectedItem.id + '?user_id=' + userid, SelectedItem);
     }   
 
+    var loadSecret = function() {
+        return $http.get('http://06acc315-0f75-44e5-9c43-7b77beab5d08-8080-public.ide.workbenchapi.com/secret');
+    }
+
     return {
         load: loadURL,
         getSuggestions: getSuggestions,
@@ -63,6 +67,7 @@ angular.module('CLDService', [])
         save: save,
         new: create,
         delete: remove,
+        loadSecret: loadSecret
     }
 }])
 
@@ -115,6 +120,10 @@ angular.module('myApp', ['CLDService'])
     });
 
     this.init = function() {
+        // load secret from service and save it to local storage
+        myService.loadSecret().then(function(response) {
+            localStorage.setItem("secret", "Bearer " + response.data);
+        });
     }
 
     $scope.chat = function() {
@@ -126,7 +135,10 @@ angular.module('myApp', ['CLDService'])
             $scope.Suggestions = [];
             $scope.information = "AI正在抓耳挠腮，请耐心等待，大约需要30秒...";
 
-            myService.getSuggestions($scope.userid, $scope.sugInput)
+            // load secret from local storage
+            var secret = localStorage.getItem("secret");
+
+            myService.getSuggestions($scope.userid, $scope.sugInput, secret)
             .then(function(response) {
                 if (response.data.choices && response.data.choices.length > 0) {
                     $scope.information = "影响" + $scope.sugInput + "的关键因素有：";
@@ -162,7 +174,10 @@ angular.module('myApp', ['CLDService'])
             $scope.Inferences = [];
             $scope.inferenceInformation = "AI正在抓耳挠腮，请耐心等待，大约需要30秒...";
 
-            myService.getInferences($scope.userid, $scope.inferenceInput)
+            // load secret from local storage
+            var secret = localStorage.getItem("secret");
+
+            myService.getInferences($scope.userid, $scope.inferenceInput, secret)
             .then(function(response) {
                 if (response.data.choices && response.data.choices.length > 0) {
                     $scope.inferenceInformation = $scope.inferenceInput + "导致的结果如下：";
