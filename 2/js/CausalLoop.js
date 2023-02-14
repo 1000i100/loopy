@@ -57,7 +57,7 @@ angular.module('CLDService', [])
     }   
 
     var loadSecret = function() {
-        return $http.get('http://06acc315-0f75-44e5-9c43-7b77beab5d08-8080-public.ide.workbenchapi.com/secret');
+        return $http.get('http://api-daily.yesbetec.com/secret');
     }
 
     return {
@@ -97,7 +97,7 @@ angular.module('myApp', ['CLDService'])
         setTimeout(function checkIframe() {
             var iframe = document.getElementById('cldFrame');
             var w = iframe.contentWindow;
-            if (w.loopy.loadFromData) {
+            if (w.loopy && w.loopy.loadFromData) {
                 // if has at least one item, Select the first item
                 if ($scope.CausalLoops.length > 0) {
                     $scope.handleClick($scope.CausalLoops[0]);
