@@ -30,7 +30,7 @@ angular.module('CLDService', [])
             method: 'POST',
             url: 'https://api.openai.com/v1/completions',
             headers: {
-                'Authorization': 'Bearer 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',
+                'Authorization': 'Bearer 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',
                 'Content-Type': 'application/json'
             },
             data: {
