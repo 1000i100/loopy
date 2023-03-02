@@ -143,6 +143,9 @@
                 <li class="nav-item" role="presentation">
                   <button class="nav-link" id="inference-tab" data-bs-toggle="tab" data-bs-target="#inference" type="button" role="tab" aria-controls="inference" aria-selected="false">推 理</button>
                 </li>
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link" id="feature-tab" data-bs-toggle="tab" data-bs-target="#feature" type="button" role="tab" aria-controls="feature" aria-selected="false">找特征</button>
+                </li>
               </ul>
               <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade show active" id="cause" role="tabpanel" aria-labelledby="cause-tab">
@@ -206,6 +209,43 @@
                       <div class="expand" id="ui-basic">
                         <ul class="nav flex-column sub-menu" id="myList">
                           <li class="nav-item" ng-repeat="x in Inferences">
+                            <a href="#" class="list-group-item list-group-item-action flex-column align-items-start active">
+                              <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">{{x.name}}</h5>
+                                <small>{{x.direction}}</small>
+                              </div>
+                              <p class="mb-1">{{x.description}}</p>
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+                <div class="tab-pane fade" id="feature" role="tabpanel" aria-labelledby="feature-tab">
+                  <p></p>
+                  <p>输入一个词，AI帮你寻找它的特征...</p>
+                  <ul class="navbar-nav mr-lg-4 w-100">
+                    <li class="nav-item nav-search d-none d-lg-block w-100">
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text" id="search">
+                            <i class="mdi mdi-magnify"></i>
+                          </span>
+                        </div>
+                        
+                        <input type="text" class="form-control" ng-model="featureInput" placeholder="e.g. 骗子" aria-label="search" ng-keypress="checkFeatureKey($event)" aria-describedby="search">
+                      </div>
+                    </li>
+                    <li>
+                      <p></p>
+                      <!-- add a line to display error message or description -->
+                      <div>{{featureInformation}}</div>
+                    </li>
+                    <li>
+                      <div class="expand" id="ui-basic">
+                        <ul class="nav flex-column sub-menu" id="myList">
+                          <li class="nav-item" ng-repeat="x in Features">
                             <a href="#" class="list-group-item list-group-item-action flex-column align-items-start active">
                               <div class="d-flex w-100 justify-content-between">
                                 <h5 class="mb-1">{{x.name}}</h5>

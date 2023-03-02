@@ -16,15 +16,21 @@ angular.module('CLDService', [])
     };
 
     var getSuggestions = function(userid, sugInput, secret) {
-        prompt = "列出来影响 " + sugInput + " 的主要因素，不多于5个，按重要程序排序，并给出因素的名字，用正向或者负向其中一个来表达影响的方向并用小括号包围，以及对该因素一步一步地详细的解释";
+        prompt = "列出来影响 " + sugInput + " 的主要因素，不多于5个，按重要程序排序，并给出因素的名字，用正向或者负向其中一个来表达影响的方向并用小括号包围，以及对该因素一步一步地详细的解释。输出用JSON格式，把所有因素都放在一个命名为importance的数组对象中，其中每一个主要因素是数组中的一个item，属性名分别用name，direction和explanation";
         return chat(prompt, secret);
     };
 
     var getInferences = function(userid, input, secret) {
-        prompt = "我决定 " + input + "。列出来上述决定会导致的主要后果，不多于5个，按重要程序排序，并给出后果的名字，用正向或者负向其中一个来表达影响的方向并用小括号包围，以及对该影响一步一步地详细的解释";
+        prompt = "我决定 " + input + "。列出来上述决定会导致的主要后果，不多于5个，按重要程序排序，并给出后果的名字，用正向或者负向其中一个来表达影响的方向并用小括号包围，以及对该影响一步一步地详细的解释。输出用JSON格式，把所有因素都放在一个命名为importance的数组对象中，其中每一个主要因素是数组中的一个item，属性名分别用name，direction和explanation";
         return chat(prompt, secret);
     };
 
+    var getFeatures = function(userid, input, secret) {
+        prompt = "列出来 " + input + " 的主要特征，不多于5个，按重要程序排序，并给出特征的名字，用正向或者负向其中一个来表达影响的方向并用小括号包围，以及对该特征一步一步地详细的解释。输出用JSON格式，把所有特征都放在一个命名为importance的数组对象中，其中每一个主要特征是数组中的一个item，属性名分别用name，direction和explanation";
+        return chat(prompt, secret);
+    };
+
+    /*
     var chat = function(prompt, secret) {
         return $http({
             method: 'POST',
@@ -38,6 +44,22 @@ angular.module('CLDService', [])
                 "prompt": prompt,
                 "max_tokens": 2048,
                 "temperature": 0,
+            }
+        })
+    }
+    */
+
+    var chat = function(prompt, secret) {
+        return $http({
+            method: 'POST',
+            url: 'https://api.openai.com/v1/chat/completions',
+            headers: {
+                'Authorization': secret,
+                'Content-Type': 'application/json'
+            },
+            data: {
+                "model": "gpt-3.5-turbo",
+                "messages": [{"role": "user", "content": prompt}],
             }
         })
     }
@@ -64,6 +86,7 @@ angular.module('CLDService', [])
         load: loadURL,
         getSuggestions: getSuggestions,
         getInferences: getInferences,
+        getFeatures: getFeatures,
         save: save,
         new: create,
         delete: remove,
@@ -143,21 +166,12 @@ angular.module('myApp', ['CLDService'])
                 if (response.data.choices && response.data.choices.length > 0) {
                     $scope.information = "影响" + $scope.sugInput + "的关键因素有：";
 
-                    response.data.choices.forEach(function(item) {
-                        var lines = item.text.split("\n");
-                        for (var i = 0; i < lines.length; i++) {
-                            var line = lines[i];
-                            if (line.length < 5) {
-                                continue;
-                            }
+                    response.data.choices.forEach(function(item) {                        
+                        var obj = angular.fromJson(item.message.content)
 
-                            let parts = line.split("（")
-                            let part1 = parts[0]
-                            let part2 = parts[1].split("）：")[0]
-                            let part3 = parts[1].split("）：")[1]
-        
-                            $scope.Suggestions.push(new Suggestion(part1, part2, part3));
-                        }
+                        obj.importance.forEach(function(item) {
+                            $scope.Suggestions.push(new Suggestion(item.name, item.direction, item.explanation));
+                        })
                     })
                 } else {
                     $scope.information = response.data.message;
@@ -182,27 +196,47 @@ angular.module('myApp', ['CLDService'])
                 if (response.data.choices && response.data.choices.length > 0) {
                     $scope.inferenceInformation = $scope.inferenceInput + "导致的结果如下：";
 
-                    response.data.choices.forEach(function(item) {
-                        var lines = item.text.split("\n");
-                        for (var i = 0; i < lines.length; i++) {
-                            var line = lines[i];
-                            if (line.length < 5) {
-                                continue;
-                            }
+                    response.data.choices.forEach(function(item) {                        
+                        var obj = angular.fromJson(item.message.content)
 
-                            let parts = line.split("（")
-                            let part1 = parts[0]
-                            let part2 = parts[1].split("）：")[0]
-                            let part3 = parts[1].split("）：")[1]
-        
-                            $scope.Inferences.push(new Suggestion(part1, part2, part3));
-                        }
+                        obj.importance.forEach(function(item) {
+                            $scope.Inferences.push(new Suggestion(item.name, item.direction, item.explanation));
+                        })
                     })
                 } else {
                     $scope.inferenceInformation = response.data.message;
                 }
             }, function(error) {
                 $scope.inferenceInformation = error;
+            });
+        }
+    };
+
+    $scope.checkFeatureKey = function($event) {
+        if ($event.which === 13) {
+            $scope.Features = [];
+            $scope.featureInformation = "AI正在抓耳挠腮，请耐心等待，大约需要30秒...";
+
+            // load secret from local storage
+            var secret = localStorage.getItem("secret");
+
+            myService.getFeatures($scope.userid, $scope.featureInput, secret)
+            .then(function(response) {
+                if (response.data.choices && response.data.choices.length > 0) {
+                    $scope.featureInformation = $scope.featureInput + "的特征如下：";
+
+                    response.data.choices.forEach(function(item) {                        
+                        var obj = angular.fromJson(item.message.content)
+
+                        obj.importance.forEach(function(item) {
+                            $scope.Features.push(new Suggestion(item.name, item.direction, item.explanation));
+                        })
+                    })
+                } else {
+                    $scope.featureInformation = response.data.message;
+                }
+            }, function(error) {
+                $scope.featureInformation = error;
             });
         }
     };
