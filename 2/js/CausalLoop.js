@@ -49,17 +49,16 @@ angular.module('CLDService', [])
     }
     */
 
+
     var chat = function(prompt, secret) {
         return $http({
             method: 'POST',
-            url: 'https://api.openai.com/v1/chat/completions',
+            url: 'https://zd513m4z1h.execute-api.ap-southeast-1.amazonaws.com/alpha/chat',
             headers: {
-                'Authorization': secret,
                 'Content-Type': 'application/json'
             },
             data: {
-                "model": "gpt-3.5-turbo",
-                "messages": [{"role": "user", "content": prompt}],
+                "prompt": [{"role": "user", "content": prompt}],
             }
         })
     }
