@@ -30,26 +30,6 @@ angular.module('CLDService', [])
         return chat(prompt, secret);
     };
 
-    /*
-    var chat = function(prompt, secret) {
-        return $http({
-            method: 'POST',
-            url: 'https://api.openai.com/v1/completions',
-            headers: {
-                'Authorization': secret,
-                'Content-Type': 'application/json'
-            },
-            data: {
-                "model": "text-davinci-003",
-                "prompt": prompt,
-                "max_tokens": 2048,
-                "temperature": 0,
-            }
-        })
-    }
-    */
-
-
     var chat = function(prompt, secret) {
         return $http({
             method: 'POST',
