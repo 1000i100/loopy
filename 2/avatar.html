@@ -65,7 +65,7 @@
 <body>
     <!-- Main content -->
     <section>
-        <div class="container d-flex flex-column" ng-app="Avatar" ng-controller="AvatarController" >
+        <div class="d-flex flex-column" ng-app="Avatar" ng-controller="AvatarController" >
             <div class="container-fluid">
                 <div class="row">
                   <!-- 左列 -->
@@ -74,7 +74,7 @@
                         <div class="card border-secondary mb-3">
                           <div class="card-header">对话历史</div>
                             <div class="card-body" style="height: 85vh;">
-                              <div class="overflow-auto" style="height: 90%;">
+                              <div id="dialog" class="overflow-auto" style="height: 90%;">
                                 <div class="card mb-2" ng-repeat="conversation in conversations">
                                   <div ng-if="conversation.isUser" class="card-body bg-success text-white" style="max-width: 85%; margin-left: auto;">{{conversation.content}}</div>
                                   <div ng-if="!conversation.isUser" class="card-body bg-light" style="max-width: 85%;">{{conversation.content}}</div>
