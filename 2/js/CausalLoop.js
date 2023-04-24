@@ -12,7 +12,7 @@ angular.module('CLDService', [])
     }
 
     var loadURL = function(userid) {
-        return $http.get('http://api-daily.yesbetec.com/CLDs?user_id=' + userid);
+        return $http.get('http://api.yyds-ai.com/CLDs?user_id=' + userid);
     };
 
     var getSuggestions = function(userid, sugInput, secret) {
@@ -44,21 +44,21 @@ angular.module('CLDService', [])
     }
 
     var create = function(userid) {
-        return $http.post('http://api-daily.yesbetec.com/CLDs?user_id=' + userid);
+        return $http.post('http://api.yyds-ai.com/CLDs?user_id=' + userid);
     };
 
     var save = function(userid, SelectedItem) {
         // Issue a POST request to update the data
-        return $http.post('http://api-daily.yesbetec.com/CLDs/' + SelectedItem.id + '?user_id=' + userid, SelectedItem);
+        return $http.post('http://api.yyds-ai.com/CLDs/' + SelectedItem.id + '?user_id=' + userid, SelectedItem);
     }
 
     var remove = function(userid, SelectedItem) {
         // Issue a POST request to update the data
-        return $http.delete('http://api-daily.yesbetec.com/CLDs/' + SelectedItem.id + '?user_id=' + userid, SelectedItem);
+        return $http.delete('http://api.yyds-ai.com/CLDs/' + SelectedItem.id + '?user_id=' + userid, SelectedItem);
     }   
 
     var loadSecret = function() {
-        return $http.get('http://api-daily.yesbetec.com/secret');
+        return $http.get('http://api.yyds-ai.com/secret');
     }
 
     return {

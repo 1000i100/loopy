@@ -16,7 +16,7 @@ app.controller("RegisterController", ["$scope", "$http", function ($scope, $http
       nickname: $scope.nickname || "",
     };
 
-    $http.post("http://api-daily.yesbetec.com/register", data).then(
+    $http.post("http://api.yyds-ai.com/register", data).then(
       function (response) {
         if (response.data.isOK) {
           window.location.href = "login.html";

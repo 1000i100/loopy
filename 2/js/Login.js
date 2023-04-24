@@ -9,12 +9,12 @@ app.controller("LoginController", ["$scope", "$http", function ($scope, $http) {
 			password: $scope.password || "",
     };
 
-		// https://api-daily.yesbetec.com
+		// https://api.yyds-ai.com
 		// https://06acc315-0f75-44e5-9c43-7b77beab5d08-8080-public.ide.workbenchapi.com
 
 		$.ajax({
 			type: "POST",
-			url: "http://api-daily.yesbetec.com/login",
+			url: "http://api.yyds-ai.com/login",
 			data: JSON.stringify(data),
 			contentType: "application/json; charset=utf-8",
 			dataType: "json",
@@ -40,7 +40,7 @@ app.controller("LoginController", ["$scope", "$http", function ($scope, $http) {
 		
 
 		/*
-    $http.post('https://api-daily.yesbetec.com/login', data).then(
+    $http.post('https://api.yyds-ai.com/login', data).then(
       function (response) {
         if (response.data.userid) {
           localStorage.setItem("userid", response.data.userid);
