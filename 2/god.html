@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Webpixels">
+    <title>Insight.ai</title>
+    <!-- Preloader -->
+    <style>
+    </style>
+    <script>
+    </script>
+    <!-- Favicon -->
+    <link rel="icon" href="assets/img/brand/favicon.png" type="image/png"><!-- Font Awesome -->
+    <link rel="stylesheet" href="assets/libs/@fortawesome/fontawesome-free/css/all.min.css">
+    <!-- Quick CSS -->
+    <link rel="stylesheet" href="assets/css/quick-website.css" id="stylesheet">
+    <link rel="stylesheet" href="css/god.css" id="stylesheet">
+</head>
+
+<body ng-app="myApp" ng-controller="myCtrl" style="height: 100vh; width: 100vw; padding: 12px;">
+    <!-- Main content -->
+    <div class="container-fluid h-100">
+      <div class="row h-100">
+          <div class="col-md-4 d-flex flex-column h-100 justify-content-between">
+              <div id="cardList" class="scrollable">
+                <!-- 为每个活动生成一个卡片 -->
+                <div class="card" ng-repeat="activity in activities" ng-click="selectActivity($index)">
+                  <div class="card-body">
+                    <h5 class="card-title">{{ activity.name }}</h5>
+                    <p class="card-text">{{ activity.task }}</p>
+                  </div>
+                </div>
+              </div>
+              <button id="addCardBtn" class="btn btn-primary mt-2 align-self-center" ng-click="addActivity()">添加Activity</button>
+          </div>
+          <div class="col-md-8 h-100 parent-element">
+            <div class="form-group brother-elements d-flex flex-column">
+              <div class="d-flex justify-content-between align-items-center">
+                <label for="userInput">用户输入：</label>
+                <button id="executeBtn" class="btn btn-primary mt-2 align-self-center" ng-click="execute()" style="height: 30px; padding: 0 12px;">执行</button>
+              </div>
+              <textarea id="userInput" class="form-control" rows="3" ng-model="question"></textarea>
+            </div>            
+            <div class="response-elements">
+              <ul id="responseList" class="list-group">
+                <li class="list-group-item" ng-repeat="item in response track by $index" ng-style="{'color': item.color, 'font-size': item.size, 'font-weight': item.weight, 'white-space': 'pre-line'}">{{item.text}}</li>
+              </ul>
+            </div>
+          </div>
+      </div>
+    </div>
+  
+    <!-- Modal -->
+    <div class="modal right fade" id="configModal" tabindex="-1" role="dialog" aria-labelledby="configModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+          <div class="modal-content">
+              <div class="modal-header" style="justify-content: center;">
+                  <h5 class="modal-title" id="configModalLabel">配置</h5>
+              </div>
+              <div class="modal-body">
+                  <!-- Config content goes here -->
+                  <div class="form-group">
+                    <label for="activityName">活动名称：</label>
+                    <input type="text" class="form-control" id="activityName" ng-model="selectedActivity.name">
+                  </div>
+                  <div class="form-group">
+                      <label for="task">目标：</label>
+                      <textarea class="form-control" id="task" rows="3" ng-model="selectedActivity.task"></textarea>
+                  </div>
+                  <div class="form-group">
+                    <div style="display: flex; justify-content: space-between;">
+                      <label for="commands">命令：</label>
+                      <button class="btn btn-primary" ng-click="addCommand()" style="height: 30px; padding: 0 12px;">+</button>
+                    </div>
+                    <ul id="commands" class="list-group">
+                        <li class="list-group-item" ng-repeat="(commandKey, commandValue) in selectedActivity.commands">
+                            {{commandKey}}: {{commandValue.name}}
+                        </li>
+                    </ul>
+                </div>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                  <button type="button" class="btn btn-primary">保存</button>
+              </div>
+          </div>
+      </div>
+    </div>
+  
+
+    <!-- Core JS  -->
+    <script src="assets/libs/jquery/dist/jquery.min.js"></script>
+    <script src="assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/libs/svg-injector/dist/svg-injector.min.js"></script>
+    <script src="assets/libs/feather-icons/dist/feather.min.js"></script>
+    <!-- Quick JS -->
+    <script src="assets/js/quick-website.js"></script>
+
+    <script src="js/angular.min.js"></script>
+    <script src="js/openAIChat.js"></script>
+    <script src="js/god.js"></script>
+    
+</body>
+
+</html>
