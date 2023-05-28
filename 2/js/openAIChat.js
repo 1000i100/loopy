@@ -3,6 +3,31 @@ class OpenAIChat {
 		this.$http = $http
 	}
 
+  async embedding(text, successCallback, errorCallback) {
+    try {
+
+			const asyncResponse = await new Promise((resolve, reject) => {
+				this.$http({
+					url: 'https://zd513m4z1h.execute-api.ap-southeast-1.amazonaws.com/alpha/embedding',
+					timeout: 60000,
+					method: 'POST',
+					data: { text: text },
+					header: {
+						'content-type': 'application/json',
+					}
+				}).then(function(res) {
+					resolve(res)
+				}, function(err) {
+					reject(err)
+				})
+			})
+
+      successCallback(asyncResponse);
+    } catch (error) {
+      errorCallback(error);
+    }
+  }
+
 	async retrieve(question, document, successCallback, errorCallback) {
     try {
 
