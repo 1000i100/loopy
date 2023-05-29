@@ -24,38 +24,18 @@ app.controller("LoginController", ["$scope", "$http", function ($scope, $http) {
     	},
 			success: function (response) {
 				if (response.userid) {
-          localStorage.setItem("userid", response.userid);
+          			localStorage.setItem("userid", response.userid);
 					localStorage.setItem("nickname", response.nickname);
-          window.location.href = "main.html";
-        } else {
-          $scope.error = response.message;
+          			window.location.href = "index.html";
+        		} else {
+          			$scope.error = response.message;
 					localStorage.setItem("userid", "");
 					localStorage.setItem("nickname", "");
-        }
+        		}
 			},
 			failure: function (error) {
 				$scope.error = "登录失败";
 			}
 		});
-		
-
-		/*
-    $http.post('https://api.yyds-ai.com/login', data).then(
-      function (response) {
-        if (response.data.userid) {
-          localStorage.setItem("userid", response.data.userid);
-					localStorage.setItem("nickname", response.data.nickname);
-          window.location.href = "main.html";
-        } else {
-          $scope.error = response.data.message;
-					localStorage.setItem("userid", "");
-					localStorage.setItem("nickname", "");
-        }
-      },
-      function (error) {
-				$scope.error = "登录失败";
-      }
-    );
-		*/
   };
 }]);

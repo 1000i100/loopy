@@ -78,9 +78,9 @@ class OpenAIChat {
     }
   }
 
-  async chat(prompt, successCallback, errorCallback) {
+  async chat(prompt, successCallback, errorCallback, useGPT4=false) {
     try {
-      const asyncResponse = await this.chatAsync(prompt);
+      const asyncResponse = await this.chatAsync(prompt, useGPT4);
       const data = asyncResponse['data']
       const messageId = data.message_id
     
@@ -91,13 +91,13 @@ class OpenAIChat {
     }
   }
 
-  async chatAsync(prompt) {
+  async chatAsync(prompt, useGPT4=false) {
     return new Promise((resolve, reject) => {
       this.$http({
         url: 'https://zd513m4z1h.execute-api.ap-southeast-1.amazonaws.com/alpha/chat_async',
         timeout: 60000,
         method: 'POST',
-        data: { prompt: prompt },
+        data: { prompt: prompt, useGPT4: useGPT4 },
         header: {
           'content-type': 'application/json',
         }

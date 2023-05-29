@@ -12,7 +12,7 @@ class PromptTemplate {
       return formattedTemplate;
     }
   }
-  
+
 class Command {
     constructor(openAIChat, name) {
           this.openAIChat = openAIChat;
@@ -27,7 +27,7 @@ class Command {
           addLine(res.data.choices[0].message.content)
       }
   
-    execute_general(history, instruct) {
+    execute_general(history, instruct, useGPT4=false) {
       return new Promise((resolve, reject) => {
         console.log(instruct);
   
@@ -43,7 +43,7 @@ class Command {
         }, (err) => {
           console.error(err) // 打印错误信息，例如{errMsg: 'request:fail'}
           reject(err);
-        });
+        }, useGPT4);
       });
     }
   }

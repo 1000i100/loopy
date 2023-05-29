@@ -1,5 +1,35 @@
 class RiskAnalysisCommand extends Command {
-  static template = `你是一个合同的审核员，我会给你一份合同。你根据合同内容和中国的相关法律法规，帮我找出来该合同的风险点，注意我是甲方，只找出对甲方的风险。你回答的时候，请首先引用原文的条款，然后告诉我风险是什么。请注意，合同中部分的内容可能留白，这些不是风险，再寻找风险点的时候请忽略它们，以后会填的。客户的问题：{question}
+
+  static template = `你是一个合同律师，任务是分析客户的合同，你根据合同内容和中国的相关法律法规，找出来该合同的风险点，注意我是甲方，只找出对甲方的风险。你回答的时候，请首先引用原文的条款，然后告诉我风险是什么。
+请遵守如下规则：
+1. 合同中部分的内容可能留白，这些不是风险，在寻找风险点的时候请忽略它们；
+2.请比较前后条款后再总结风险，也许风险点已经在后面的条款中解决了；
+3. 无限责任条款: 如果合同中的责任条款没有对可能产生的责任设置上限，那么在某些情况下，这可能对承担责任的一方产生极大的风险；
+4.不明确的条款: 如果合同的条款含混不清或含义模糊，那么这可能导致未来的争议和不确定性；
+5.保证和承诺: 如果合同中包含对产品、服务、结果等的保证或承诺，那么必须仔细审查这些承诺是否实现；
+6.终止条款: 对于任何合同，都应该明确规定何时以及如何可以终止合同。如果终止条款不明确或者不公平，那么这可能对某一方产生不利影响；
+7.赔偿条款: 这些条款经常在争议中起到关键作用。赔偿条款的不公平或者不明确可能对一方造成重大风险；
+8.解决争议的条款: 这些条款应明确规定如何处理可能出现的争议。如果没有这些条款或者这些条款含混不清，那么在出现争议时可能会出现问题；
+---------------------------
+合同如下：
+{contract}
+---------------------------
+你必须使用下面JSON的格式输出，只输出JSON。
+
+输出格式:
+{
+    "risk": [
+       {
+           "text": "合同中有风险的段落的前10个字符，严格遵守原始文字",
+           "suggestion": "风险的描述以及建议"
+       }
+    ]
+}
+
+确保输出可以被 Python json.loads 正确解析。`;
+
+/*
+static template = `你是一个合同的审核员，我会给你一份合同。你根据合同内容和中国的相关法律法规，帮我找出来该合同的风险点，注意我是甲方，只找出对甲方的风险。你回答的时候，请首先引用原文的条款，然后告诉我风险是什么。请注意，合同中部分的内容可能留白，这些不是风险，再寻找风险点的时候请忽略它们，以后会填的。
 ---------------------------
 合同如下：
 {contract}
@@ -17,6 +47,7 @@ class RiskAnalysisCommand extends Command {
 }
 
 确保输出可以被 Python json.loads 正确解析。`;
+*/
   
   constructor(openAIChat) {
     super(openAIChat, "风险分析");
@@ -24,7 +55,7 @@ class RiskAnalysisCommand extends Command {
   
   execute(contract) {
     const instruct = new PromptTemplate(["contract"], RiskAnalysisCommand.template);
-    return this.execute_general([], instruct.format({ contract: contract }));
+    return this.execute_general([], instruct.format({ contract: contract }), true);
   }
 }
 
@@ -122,6 +153,33 @@ dropZone.addEventListener('dragleave', function(e) {
     this.classList.remove('dragover');
 });
 
+function extractClauses(contractText, startClause, endMarker) {
+  const startPattern = new RegExp(`${startClause}[\\s\\S]*`, "g");
+  const startIndex = contractText.search(startPattern);
+
+  if (startIndex === -1) {
+    return []; // 未找到开始条款
+  }
+
+  const endPattern = new RegExp(`${endMarker}|第[\\d一二三四五六七八九十百千万]+条`, "g");
+  let endIndex = 0;
+  let match;
+  while ((match = endPattern.exec(contractText)) !== null) {
+    if (match[0] === endMarker) {
+      endIndex = match.index;
+      break;
+    }
+    endIndex = match.index;
+  }
+
+  if (endIndex <= startIndex) {
+    return ''; // 未找到结束标记或结束条款
+  }
+
+  return contractText.substring(startIndex, endIndex).trim();;
+}
+
+
 dropZone.addEventListener('drop', function(e) {
   e.stopPropagation();
   e.preventDefault();
@@ -172,7 +230,14 @@ dropZone.addEventListener('drop', function(e) {
               Promise.all(countPromises).then(function(texts) {
                   var pdfText = texts.join('');
 
-                  var chunks = scope.splitContract(pdfText);
+                  // $TODO: 如何合同不满足这个格式该怎么办？
+                  const startClause = "第一条";
+                  const endMarker = "（签章）";
+                  const clause = extractClauses(pdfText, startClause, endMarker);
+                  console.log(clause);              
+
+
+                  var chunks = scope.splitContract(clause);
                   const size = chunks.length;
 
                   // Start the progress bar
@@ -291,6 +356,8 @@ app.controller('riskController', ["$scope", "$http", function ($scope, $http) {
         {type: '风险', text: '甲方为法人的或通过法人机构委托销售、拍卖的，应按照附件一提供二手车技术状况表，作为合同的一部分', suggestion: '这一条款要求甲方提供一份详细的二手车技术状况表，并向乙方提供一个质保期。'},
       ];
       */
+
+      var count = 0
     
       for (const chunk of chunks) {
         try {
@@ -314,6 +381,11 @@ app.controller('riskController', ["$scope", "$http", function ($scope, $http) {
           
           embeddings[embedding] = chunk
 
+          // $TODO: 做一个小的测试，不想花太多的钱
+          count += 1
+          if (count > 1) {
+            break
+          }
         } catch(err) {
           console.error(err);
         }
