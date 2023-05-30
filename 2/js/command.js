@@ -7,11 +7,12 @@ class PromptTemplate {
     format(values) {
       let formattedTemplate = this.template;
       for (const variable of this.inputVariables) {
-        formattedTemplate = formattedTemplate.replace(`{${variable}}`, values[variable]);
+        const regex = new RegExp(`{${variable}}`, 'g');
+        formattedTemplate = formattedTemplate.replace(regex, values[variable]);
       }
       return formattedTemplate;
-    }
-  }
+    }    
+}
 
 class Command {
     constructor(openAIChat, name) {

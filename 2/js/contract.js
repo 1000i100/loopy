@@ -1,6 +1,6 @@
 class RiskAnalysisCommand extends Command {
 
-  static template = `你是一个合同律师，任务是分析客户的合同，你根据合同内容和中国的相关法律法规，找出来该合同的风险点，注意我是甲方，只找出对甲方的风险。你回答的时候，请首先引用原文的条款，然后告诉我风险是什么。
+  static template = `你是一个合同律师，任务是分析客户的合同，你根据合同内容和中国的相关法律法规，找出来该合同的风险点，注意我是{role}，只找出对{role}的风险。你回答的时候，请首先引用原文的条款，然后告诉我风险是什么。
 请遵守如下规则：
 1. 合同中部分的内容可能留白，这些不是风险，在寻找风险点的时候请忽略它们；
 2.请比较前后条款后再总结风险，也许风险点已经在后面的条款中解决了；
@@ -53,9 +53,9 @@ static template = `你是一个合同的审核员，我会给你一份合同。�
     super(openAIChat, "风险分析");
   }
   
-  execute(contract) {
-    const instruct = new PromptTemplate(["contract"], RiskAnalysisCommand.template);
-    return this.execute_general([], instruct.format({ contract: contract }), true);
+  execute(contract, useGPT4, role) {
+    const instruct = new PromptTemplate(["contract", "role"], RiskAnalysisCommand.template);
+    return this.execute_general([], instruct.format({ contract: contract, role: role }), useGPT4);
   }
 }
 
@@ -179,6 +179,19 @@ function extractClauses(contractText, startClause, endMarker) {
   return contractText.substring(startIndex, endIndex).trim();;
 }
 
+function startProgress(size, timeout=5000) {
+  document.querySelector('.progress').style.display = '';
+  var progressBar = document.querySelector('.progress-bar');
+  var progress = 0;
+  progressBar.style.width = progress + '%';
+  var progressInterval = setInterval(function () {
+    progress += 10 / size;
+    if (progress > 100)
+      progress = 100;
+    progressBar.style.width = progress + '%';
+  }, timeout);
+  return progressInterval;
+}
 
 dropZone.addEventListener('drop', function(e) {
   e.stopPropagation();
@@ -236,37 +249,30 @@ dropZone.addEventListener('drop', function(e) {
                   const clause = extractClauses(pdfText, startClause, endMarker);
                   console.log(clause);              
 
-
-                  var chunks = scope.splitContract(clause);
-                  const size = chunks.length;
+                  scope.chunks = scope.splitContract(clause);
 
                   // Start the progress bar
-                  var progressBar = document.querySelector('.progress-bar');
-                  var progress = 0;
-                  progressBar.style.width = progress + '%';
-                  var progressInterval = setInterval(function() {
-                      progress += 10 / size;
-                      if (progress > 100) progress = 100;
-                      progressBar.style.width = progress + '%';
-                  }, 5000);
-
+                  var progressInterval = startProgress(scope.chunks.length, 100);
+                  document.querySelector('.control-panel').style.display = 'none';
+                  
+                  
                   // Assume loadRisks() returns a Promise that resolves with the new risks
-                  scope.loadRisks(chunks).then(function([newRisks, embeddings]) {
-                      // Update $scope.risks
-                      scope.$apply(function() {
-                          scope.risks = newRisks;
-                          scope.embeddings = embeddings
-                      });
-
-                      // Stop the progress bar
-                      clearInterval(progressInterval);
-                      document.querySelector('.progress').style.display = 'none';
+                  scope.loadEmbedding(scope.chunks).then(function(embeddings) {
+                    // Update $scope.risks
+                    scope.$apply(function() {
+                      scope.embeddings = embeddings
+                    });
+                
+                    // Stop the progress bar
+                    clearInterval(progressInterval);
+                    document.querySelector('.progress').style.display = 'none';
+                    document.querySelector('.control-panel').style.display = '';
                   }).catch(function(err) {
-                      console.error(err);
-                      clearInterval(progressInterval);
-
-                      // 把progress-text控件的文字改成错误信息
-                      document.querySelector('#progress-text').textContent = err;
+                    console.error(err);
+                    clearInterval(progressInterval);
+                
+                    // 把progress-text控件的文字改成错误信息
+                    document.querySelector('#progress-text').textContent = err;
                   });
               });
           });
@@ -283,6 +289,11 @@ app.controller('riskController', ["$scope", "$http", function ($scope, $http) {
     const openAIChat = new OpenAIChat($http);
     const riskAnalysisCommand = new RiskAnalysisCommand(openAIChat);
     const embeddingCommand = new EmbeddingCommand(openAIChat);
+
+    $scope.model = 'GPT3.5';
+    $scope.role = '甲方';
+    $scope.result = '';
+    $scope.buttonClicked = false;
 
     $scope.question = "";
     $scope.disableInput = false;
@@ -342,9 +353,52 @@ app.controller('riskController', ["$scope", "$http", function ($scope, $http) {
       return $scope.splitChunk(contract, maxSize);
     }
 
-    $scope.loadRisks = async function(chunks) {
+    $scope.loadEmbedding = async function(chunks) {
       var allRisks = [];
       var embeddings = {};
+    
+      for (const chunk of chunks) {
+        try {
+          res = await embeddingCommand.execute(chunk)
+          var embedding = res
+          
+          embeddings[embedding] = chunk
+        } catch(err) {
+          console.error(err);
+        }
+      }
+      
+      return embeddings;
+    }
+
+    $scope.riskAnalyze = function() {
+      $scope.buttonClicked = true;
+      const useGPT4 = $scope.model === 'GPT4';
+
+      // Start the progress bar
+      var progressInterval = startProgress($scope.chunks.length);
+      
+      // Assume loadRisks() returns a Promise that resolves with the new risks
+      $scope.loadRisks($scope.chunks, useGPT4, $scope.role).then(function(newRisks) {
+        // Update $scope.risks
+        $scope.$apply(function() {
+          $scope.risks = newRisks;
+        });
+    
+        // Stop the progress bar
+        clearInterval(progressInterval);
+        document.querySelector('.progress').style.display = 'none';
+      }).catch(function(err) {
+        console.error(err);
+        clearInterval(progressInterval);
+    
+        // 把progress-text控件的文字改成错误信息
+        document.querySelector('#progress-text').textContent = err;
+      });
+    };
+
+    $scope.loadRisks = async function(chunks, useGPT4, role) {
+      var allRisks = [];
 
       /*
       return [
@@ -361,8 +415,7 @@ app.controller('riskController', ["$scope", "$http", function ($scope, $http) {
     
       for (const chunk of chunks) {
         try {
-          // $STEP ONE: Analyze the risk of the chunk
-          var res = await riskAnalysisCommand.execute(chunk);
+          var res = await riskAnalysisCommand.execute(chunk, useGPT4, role);
           var content = res.data.choices[0].message.content;
           console.log(content);
     
@@ -375,15 +428,9 @@ app.controller('riskController', ["$scope", "$http", function ($scope, $http) {
           
           allRisks = allRisks.concat(risks);
 
-          // $STEP TWO: Generate embedding for the chunk
-          res = await embeddingCommand.execute(chunk)
-          var embedding = res
-          
-          embeddings[embedding] = chunk
-
-          // $TODO: 做一个小的测试，不想花太多的钱
+          // $NOTE: 只支持分析第一页，避免成本太高
           count += 1
-          if (count > 1) {
+          if (count >= 1) {
             break
           }
         } catch(err) {
@@ -391,7 +438,7 @@ app.controller('riskController', ["$scope", "$http", function ($scope, $http) {
         }
       }
       
-      return [allRisks, embeddings];
+      return allRisks;
     }
 
     $scope.addSuggestion = function(text) {
@@ -500,6 +547,3 @@ app.controller('riskController', ["$scope", "$http", function ($scope, $http) {
     }
 
 }]);
-
-
-
