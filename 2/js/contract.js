@@ -83,10 +83,10 @@ class EmbeddingCommand extends Command {
 }
 
 class ChatCommand extends Command {
-  static template = `合同片段如下：
+  static template = `Context：
 {contract}
 ---------------------------
-参考上面的合同片段，回答客户的问题：
+客户的问题：
 {question}`;
 
   constructor(openAIChat) {
@@ -285,7 +285,7 @@ dropZone.addEventListener('drop', function(e) {
 
 
 var app = angular.module('myApp', []);
-app.controller('riskController', ["$scope", "$http", function ($scope, $http) {
+app.controller('riskController', ["$scope", "$http", "$timeout", function ($scope, $http, $timeout) {
     const openAIChat = new OpenAIChat($http);
     const riskAnalysisCommand = new RiskAnalysisCommand(openAIChat);
     const embeddingCommand = new EmbeddingCommand(openAIChat);
@@ -305,6 +305,13 @@ app.controller('riskController', ["$scope", "$http", function ($scope, $http) {
             isUser: false
         }
     ];
+
+    $scope.$watch('conversations', function(newVal, oldVal) {
+      $timeout(function(){
+        var element = document.getElementById("dialog");
+        element.scrollTop = element.scrollHeight;
+      }, 0);
+     }, true);
 
     $scope.locateInPDFView = function(risk) {
         // 获取iframe元素
@@ -487,6 +494,7 @@ app.controller('riskController', ["$scope", "$http", function ($scope, $http) {
         });
       } catch(err) {
         console.error(err);
+        reply.content = err;
         $scope.disableInput = false;
       }
     }
