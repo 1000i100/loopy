@@ -27,27 +27,6 @@ class RiskAnalysisCommand extends Command {
 }
 
 确保输出可以被 Python json.loads 正确解析。`;
-
-/*
-static template = `你是一个合同的审核员，我会给你一份合同。你根据合同内容和中国的相关法律法规，帮我找出来该合同的风险点，注意我是甲方，只找出对甲方的风险。你回答的时候，请首先引用原文的条款，然后告诉我风险是什么。请注意，合同中部分的内容可能留白，这些不是风险，再寻找风险点的时候请忽略它们，以后会填的。
----------------------------
-合同如下：
-{contract}
----------------------------
-你必须使用下面JSON的格式输出。
-
-输出格式:
-{
-    "risk": [
-       {
-           "text": "合同中有风险的段落的前10个字符，严格遵守原始文字",
-           "suggestion": "风险的描述以及建议"
-       }
-    ]
-}
-
-确保输出可以被 Python json.loads 正确解析。`;
-*/
   
   constructor(openAIChat) {
     super(openAIChat, "风险分析");
@@ -80,6 +59,43 @@ class EmbeddingCommand extends Command {
       });
     });
   }
+
+  dotProduct(vecA, vecB) {
+    let product = 0;
+    for (let i = 0; i < vecA.length; i++) {
+        product += vecA[i] * vecB[i];
+    }
+    return product;
+  }
+  
+  magnitude(vec) {
+      let sum = 0;
+      for (let i = 0; i < vec.length; i++) {
+          sum += vec[i] * vec[i];
+      }
+      return Math.sqrt(sum);
+  }
+  
+  cosineSimilarity(vecA, vecB) {
+      return this.dotProduct(vecA, vecB) / (this.magnitude(vecA) * this.magnitude(vecB));
+  }
+
+  getMostSimilarity(embedding, vectorDB) {
+    var max = -1;
+    var maxEmbedding = "";
+    var keys = Object.keys(vectorDB)
+    for (var index in keys) {
+      // Convert the key string to a number array
+      var keyArray = keys[index].split(',').map(Number);
+      
+      var similarity = this.cosineSimilarity(embedding, keyArray);
+      if (similarity > max) {
+        max = similarity;
+        maxEmbedding = keys[index];
+      }
+    }
+    return vectorDB[maxEmbedding];
+  }
 }
 
 class ChatCommand extends Command {
@@ -108,6 +124,8 @@ class ChatCommand extends Command {
 
       console.log(prompt[prompt.length - 1].content);
     }
+
+    // return this.execute_general([], instruct.format({ contract: contract, role: role }), useGPT4);
 
     return new Promise((resolve, reject) => {
       this.openAIChat.chat(prompt, (res) => {
@@ -500,58 +518,20 @@ app.controller('riskController', ["$scope", "$http", "$timeout", function ($scop
     }
 
     $scope.sendQuestion = async function() {
-      $scope.conversations.push( { isUser: true, content: $scope.question } );
+      const question = $scope.question;
+      $scope.conversations.push( { isUser: true, content: question } );
       $scope.disableInput = true;
+      $scope.question = '';
 
       // 获取embedding
       var chunk = '';
       try {
-        var embedding = await embeddingCommand.execute($scope.question)
-        chunk = $scope.getMostSimilarity(embedding);
-
+        var embedding = await embeddingCommand.execute(question)
+        chunk = embeddingCommand.getMostSimilarity(embedding, $scope.embeddings);
       } catch(err) {
         console.error(err);
       }
 
-      $scope.question = '';
       $scope.chat('', chunk);
     }
-
-    $scope.dotProduct = function(vecA, vecB) {
-      let product = 0;
-      for (let i = 0; i < vecA.length; i++) {
-          product += vecA[i] * vecB[i];
-      }
-      return product;
-    }
-    
-    $scope.magnitude = function(vec) {
-        let sum = 0;
-        for (let i = 0; i < vec.length; i++) {
-            sum += vec[i] * vec[i];
-        }
-        return Math.sqrt(sum);
-    }
-    
-    $scope.cosineSimilarity = function(vecA, vecB) {
-        return $scope.dotProduct(vecA, vecB) / ($scope.magnitude(vecA) * $scope.magnitude(vecB));
-    }
-
-    $scope.getMostSimilarity = function(embedding) {
-      var max = -1;
-      var maxEmbedding = "";
-      var keys = Object.keys($scope.embeddings)
-      for (var index in keys) {
-        // Convert the key string to a number array
-        var keyArray = keys[index].split(',').map(Number);
-        
-        var similarity = $scope.cosineSimilarity(embedding, keyArray);
-        if (similarity > max) {
-          max = similarity;
-          maxEmbedding = keys[index];
-        }
-      }
-      return $scope.embeddings[maxEmbedding];
-    }
-
 }]);
