@@ -1,0 +1,38 @@
+#drop-zone {
+    width: 100%;
+    height: 96vh;
+    line-height: 400px;
+    text-align: center;
+    transition: background-color 0.3s ease;
+    font-size: x-large;
+}
+
+#drop-zone.dragover {
+    background-color: #f8f8f8;
+}
+
+#pdf-display {
+    width: 100%;
+    height: 96vh;
+    overflow: auto;
+}
+
+.left-dialog {
+    border: 2px dashed #ccc;
+    text-align: center;
+    transition: background-color 0.3s ease;
+    height: 100%;
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%; /* This is important, make sure the parent element has a defined height */
+    font-size: small;
+}
+
+#dialog {
+    flex-grow: 1;
+    overflow: auto;
+}

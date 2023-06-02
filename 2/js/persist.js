@@ -120,7 +120,11 @@ function externalizeStrings(){
     const strings = [];
     for(let stringField of stringFields){
         const typeName = get_PERSIST_TYPE_array()[stringField["type"]]._CLASS_.toLowerCase();
-        loopy.model[`${typeName}s`].forEach((item)=>strings.push(item[stringField["fieldName"]]));
+        if (typeName != "loopy") {
+            loopy.model[`${typeName}s`].forEach((item)=>strings.push(item[stringField["fieldName"]]));
+        } else {
+            strings.push(loopy[stringField["fieldName"]]);
+        }
     }
     const utf8string = strings.join('`');
     // noinspection UnnecessaryLocalVariableJS
@@ -137,7 +141,11 @@ function restoreStrings(bitArray, newModel) {
     const stringFields = listStringFields();
     for(let stringField of stringFields){
         const typeName = get_PERSIST_TYPE_array()[stringField["type"]]._CLASS_.toLowerCase();
-        newModel[`${typeName}s`].forEach((item)=>item[stringField["fieldName"]] = strings.shift());
+        if (typeName != "loopy") {
+            newModel[`${typeName}s`].forEach((item)=>item[stringField["fieldName"]] = strings.shift());
+        } else {
+            newModel.globals[stringField["fieldName"]] = strings.shift();
+        }
     }
 }
 function appendArea (bitArray,typeStr,entitiesSizes,entitiesCountVolume,bitToRefAnyEntity,bytesAlignSection=true){

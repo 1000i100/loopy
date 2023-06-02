@@ -1,0 +1,24 @@
+{
+  "dependencies": {
+    "npm": "^9.3.1"
+  },
+  "name": "why",
+  "description": "![](https://i.imgur.com/S8c7E8o.gif)",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "build": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Yunrui/WHY.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Yunrui/WHY/issues"
+  },
+  "homepage": "https://github.com/Yunrui/WHY#readme"
+}

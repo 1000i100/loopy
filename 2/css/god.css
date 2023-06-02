@@ -1,0 +1,59 @@
+body {
+	height: 100vh;
+	overflow: hidden;
+}
+
+.modal.right {
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	width: 70%;  /* Adjust this value to cover 70% of screen width */
+	height: 100%;
+	overflow-y: auto;
+	transform: translate3d(100%, 0, 0);
+	transition: transform 0.3s linear;
+	z-index: 1050;
+}
+
+.modal.right .modal-dialog {
+	position: absolute;
+	margin: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	width: 100%;
+	height: 100%;
+}
+
+.modal.right .modal-content {
+	height: 100%;
+	width: 100%;
+	border: 0;
+	border-radius: 0;
+	overflow-y: auto;
+}
+
+.modal.fade.show.right {
+	transform: translate3d(30%, 0, 0);
+}
+
+.scrollable {
+	height: 100%; /* Adjust as needed */
+	overflow-y: auto;
+}
+
+.parent-element {
+	display: flex;
+	flex-direction: column;
+}
+
+.brother-elements {
+	flex: 0;
+}
+
+.response-elements {
+	flex: 1;
+	overflow: auto;
+}
+

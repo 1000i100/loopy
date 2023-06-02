@@ -56,7 +56,7 @@ function Sidebar(loopy){
 		injectPropsInSideBar(page,objTypeToTypeIndex("node"));
 		page.onshow = ()=> page.getComponent("label").select(); // Focus on the label field
 		page.onedit = ()=>injectPropsLabelInSideBar(page,objTypeToTypeIndex("node"));
-		deleteMeButton(self, page, "delete node");
+		deleteMeButton(self, page, "删除该实体");
 		self.addPage("Node", page);
 	})();
 
@@ -66,7 +66,7 @@ function Sidebar(loopy){
 		backToTopButton(self, page);
 		injectPropsInSideBar(page,objTypeToTypeIndex("edge"));
 		page.onshow = ()=> page.getComponent("customLabel").select(); // Focus on the label field
-		deleteMeButton(self, page, "delete arrow");
+		deleteMeButton(self, page, "删除该关系");
 		page.onedit = ()=>injectPropsLabelInSideBar(page,objTypeToTypeIndex("edge"));
 		self.addPage("Edge", page);
 	})();
@@ -89,7 +89,7 @@ function Sidebar(loopy){
 				label.kill();
 			}
 		};
-		deleteMeButton(self, page, "delete label");
+		deleteMeButton(self, page, "删除该备注");
 		page.onedit = ()=>injectPropsLabelInSideBar(page,objTypeToTypeIndex("label"));
 		self.addPage("Label", page);
 	})();
@@ -109,7 +109,7 @@ function Sidebar(loopy){
 			publish("modal",["save_link"]);
 		}
 	});
-
+	
 }
 function backToTopButton(sidebar, page){
 	page.addComponent(new ComponentButton({

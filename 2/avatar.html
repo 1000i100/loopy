@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Webpixels">
+    <title>Insight.ai</title>
+    <!-- Preloader -->
+    <style>
+        @keyframes hidePreloader {
+            0% {
+                width: 100%;
+                height: 100%;
+            }
+
+            100% {
+                width: 0;
+                height: 0;
+            }
+        }
+
+        body>div.preloader {
+            position: fixed;
+            background: white;
+            width: 100%;
+            height: 100%;
+            z-index: 1071;
+            opacity: 0;
+            transition: opacity .5s ease;
+            overflow: hidden;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        body:not(.loaded)>div.preloader {
+            opacity: 1;
+        }
+
+        body:not(.loaded) {
+            overflow: hidden;
+        }
+
+        body.loaded>div.preloader {
+            animation: hidePreloader .5s linear .5s forwards;
+        }
+    </style>
+    <script>
+        window.addEventListener("load", function() {
+            setTimeout(function() {
+                document.querySelector('body').classList.add('loaded');
+            }, 300);
+        });
+    </script>
+    <!-- Favicon -->
+    <link rel="icon" href="assets/img/brand/favicon.png" type="image/png"><!-- Font Awesome -->
+    <link rel="stylesheet" href="assets/libs/@fortawesome/fontawesome-free/css/all.min.css">
+    <!-- Quick CSS -->
+    <link rel="stylesheet" href="assets/css/quick-website.css" id="stylesheet">
+</head>
+
+<body>
+    <!-- Main content -->
+    <section>
+        <div class="d-flex flex-column" ng-app="Avatar" ng-controller="AvatarController" >
+            <div class="container-fluid">
+                <div class="row">
+                  <!-- 左列 -->
+                  <div class="col-lg-8 col-md-12">
+                    <div class="col-lg-12 col-md-12">
+                        <div class="card border-secondary mb-3">
+                          <div class="card-header">对话历史</div>
+                            <div class="card-body" style="height: 85vh;">
+                              <div id="dialog" class="overflow-auto" style="height: 90%;">
+                                <div class="card mb-2" ng-repeat="conversation in conversations">
+                                  <div ng-if="conversation.isUser" class="card-body bg-success text-white" style="max-width: 85%; margin-left: auto;">{{conversation.content}}</div>
+                                  <div ng-if="!conversation.isUser" class="card-body bg-light" style="max-width: 85%;">{{conversation.content}}</div>
+                                </div>
+                              </div>
+                              <form class="mt-3">
+                                <div class="input-group mb-3">
+                                  <input type="text" class="form-control" ng-model="question" placeholder="请输入..." aria-label="请输入..." aria-describedby="basic-addon2">
+                                  <div class="input-group-append">
+                                    <button class="btn btn-primary" type="submit" ng-click="sendQuestion()">发送</button>
+                                  </div>
+                                </div>
+                              </form>
+                            </div>
+                        </div>
+                      </div>
+                  </div>
+                  <!-- 右列 -->
+                  <div class="col-lg-4 col-md-12">
+                    <div class="card border-secondary mb-3">
+                      <div class="card-header">咨询师设定</div>
+                      <div class="card-body">
+                        <div class="form-group">
+                          <textarea class="form-control form-control-lg" id="system-settings" rows="5" ng-model="systemContent" ng-change="calculate()" placeholder="输入咨询师设定..."></textarea>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card border-secondary mb-3">
+                      <div class="card-header">事件描述</div>
+                      <div class="card-body">
+                        <div class="form-group">
+                          <textarea class="form-control form-control-lg" id="user-settings" rows="5" ng-model="userContent" ng-change="calculate()" placeholder="..."></textarea>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card border-secondary mb-3">
+                      <div class="card-header">完整的Prompt：</div>
+                      <div class="card-body h-50 overflow-auto">
+                        {{prompt}}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+        </div>
+    </section>
+    <!-- Core JS  -->
+    <script src="assets/libs/jquery/dist/jquery.min.js"></script>
+    <script src="assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/libs/svg-injector/dist/svg-injector.min.js"></script>
+    <script src="assets/libs/feather-icons/dist/feather.min.js"></script>
+    <!-- Quick JS -->
+    <script src="assets/js/quick-website.js"></script>
+
+    <script src="js/angular.min.js"></script>
+    <script src="js/Avatar.js"></script>
+    <!-- Feather Icons -->
+    <script>
+        feather.replace({
+            'width': '1em',
+            'height': '1em'
+        })
+    </script>
+</body>
+
+</html>

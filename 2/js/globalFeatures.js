@@ -3,16 +3,13 @@
     defaultValue:0, // bool
     persist:0, // reserved
 });*/
+
+
 injectProperty("loopy", "loopyMode",{
     defaultValue:0,
-    persist:1,
-    sideBar:{
-        index: 1,
-        options: [ 0, 1], // Simple || Advanced
-        label: "LOOPY v2 mode :",
-        oninput: factorySwitchMode("simple","advanced")
-    }
 });
+
+
 injectProperty("loopy", "colorLogic",{
     defaultValue:0,
     persist:2,
@@ -42,18 +39,37 @@ injectProperty("loopy", "cameraMode",{
     defaultValue:0, // bool
     persist:3, // reserved
 });*/
+
+/*
 injectProperty("loopy", "beforeAll",{
     sideBar:{
         index: 0,
-        html:`<div class="globalLoopyFirstItem"></div><b style='font-size:1.4em'>LOOPY</b> (v2.0)
-        <br>a tool for thinking in systems
+        html:`<div class="globalLoopyFirstItem"></div><b style='font-size:1.4em'>因果图的描述</b>
         <br>
-        <br><span class='mini_button' onclick='publish("modal",["examples"])'>see examples</span>
-            <span class='mini_button' onclick='publish("modal",["howto"])'>how to</span>
-            <span class='mini_button' onclick='publish("modal",["credits"])'>credits</span>
         <br><hr class="not_in_play_mode"/>`
     }
 });
+*/
+
+injectProperty("loopy", "beforeAll",{
+    defaultValue:"...",
+    
+    persist:{
+        index: 1,
+        deserializeFunc:decodeURIComponent
+    },    
+
+    sideBar:{
+        index: 1,
+        // options: [ 0, 1], // Simple || Advanced
+        label: "因果图描述 :",
+        textarea:true,
+        // oninput: factorySwitchMode("simple","advanced")
+    }
+    
+});
+
+/*
 injectProperty("loopy", "afterAll",{
     sideBar:{
         index: 99,
@@ -94,6 +110,9 @@ injectProperty("loopy", "afterAll",{
         `
     }
 });
+*/
+
+
 function factorySwitchMode(disabledClass,activatedClass){
     return function(self, value){
         let apply;
